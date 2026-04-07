@@ -1,7 +1,7 @@
 import React from "react";
-import Welcome from "../../features/dashboard/Welcome";
+import Welcome from "../../features/dashboard/Welcome.jsx";
 import profile from "../../assets/images/profileavatar.png"
-import ToggleTheme from "../UI/ToggleTheme"
+import ToggleTheme from "../UI/ToggleTheme.jsx"
 
 function Header() {
   return (

@@ -13,7 +13,7 @@ import profile from "../../assets/images/profileavatar.png";
 import logo from "../../assets/images/klogo.png";
 import SidebarItem from "../UI/SideBarItem.jsx";
 import { SlCalender } from "react-icons/sl";
-import ToggleTheme from "../UI/ToggleTheme";
+
 
 function Sidebar() {
   const [isCollapsed, setIsCollapsed] = useState(false);

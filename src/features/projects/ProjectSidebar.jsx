@@ -1,6 +1,6 @@
 import React from "react";
 import Button from "../../components/UI/Button.jsx";
-import projectlogo from "../../assets/images/noProjects.png";
+import projectlogo from "../../assets/images/noprojects.png";
 // import Dashboard from "../../pages/dashboard.jsx";
 
 const ProjectSidebar = ({

@@ -1,5 +1,5 @@
 import React from "react";
-import StatsCard from "./StatsCard";
+import StatsCard from "./StatsCard.jsx";
 
 function StatsGrid({ stats }) {
   const { totalProjects, totalTasks, completedTasks } = stats;

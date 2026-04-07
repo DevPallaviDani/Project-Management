@@ -1,7 +1,7 @@
-import React from 'react'
+import React,{useState,useEffect} from 'react'
 import { MdDarkMode } from "react-icons/md";
 import { MdLightMode } from "react-icons/md";
-import {useState,useEffect} from "react"
+
 
 function ToggleTheme() {
   

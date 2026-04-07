@@ -1,9 +1,9 @@
 import { useState, useEffect, useContext, createContext } from "react";
 import { v4 as uuidv4 } from "uuid";
-import NewProject from "../features/projects/NewProject";
-import NoProjectSelected from "../features/projects/NoProjectSelected";
-import ProjectSidebar from "../features/projects/ProjectSidebar";
-import SelectedProject from "../features/projects/SelectedProject";
+import NewProject from "../features/projects/NewProject.jsx";
+import NoProjectSelected from "../features/projects/NoProjectSelected.jsx";
+import ProjectSidebar from "../features/projects/ProjectSidebar.jsx";
+import SelectedProject from "../features/projects/SelectedProject.jsx";
 const ProjectContext = createContext();
 
 export function ProjectProvider({ children }) {

@@ -1,6 +1,5 @@
 import React from "react";
 
-
 import ProjectSidebar from "./features/projects/ProjectSidebar.jsx";
 
 import Header from "./components/layout/Header.jsx";
