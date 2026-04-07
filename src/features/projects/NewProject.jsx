@@ -8,9 +8,9 @@ function NewProject({ onAddNewProject, onCancel }) {
   const dueDateRef = useRef();
 
   function handleSave() {
-    const enteredTitle = titleRef.current.value;
-    const enteredDescription = descriptionRef.current.value;
-    const enteredDueDate = dueDateRef.current.value;
+    const enteredTitle = titleRef.current?.value || "";
+    const enteredDescription = descriptionRef.current?.value || "";
+    const enteredDueDate = dueDateRef.current?.value || "";
     //validations
     if (
       enteredTitle.trim() === "" ||
@@ -38,8 +38,10 @@ function NewProject({ onAddNewProject, onCancel }) {
           Please make sure you provide a valid value.
         </p>
       </Modal>
-      <div className=" p-6 m-16 mx-auto max-w-xl rounded-2xl hover:shadow-sm
-       hover:border hover:border-gray-100">
+      <div
+        className=" p-6 m-16 mx-auto max-w-xl rounded-2xl hover:shadow-sm
+       hover:border hover:border-gray-100"
+      >
         <h3 className="font-bold text-gray-500 text-lg">Create Project</h3>
         <menu className="flex items-center justify-end gap-4 my-4">
           <li>

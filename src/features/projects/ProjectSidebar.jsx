@@ -1,6 +1,6 @@
 import React from "react";
 import Button from "../../components/UI/Button.jsx";
-import projectlogo from "../../assets/images/karyahublogofordashboard.png"
+import projectlogo from "../../assets/images/karyahublogofordashboard.png";
 // import Dashboard from "../../pages/dashboard.jsx";
 
 const ProjectSidebar = ({
@@ -28,29 +28,30 @@ const ProjectSidebar = ({
           <h2 className="mb-8 font-bold uppercase md:text-sm text-gray-600">
             Your Projects
           </h2>
+          {projects.length > 0 && (
+            <ul className="mt-8">
+              {projects.map((project) => {
+                let cssClasses =
+                  "w-full text-left px-2 py-1 rounded-sm my-1  hover:text-gray-200 hover:bg-gray-600 hover:cursor-pointer hover:rounded-md";
+                if (project.id === selectedProjectId) {
+                  cssClasses += " bg-gray-800 text-gray-200 rounded-lg";
+                } else {
+                  cssClasses += " text-gray-400";
+                }
 
-          <ul className="mt-8">
-            {projects.map((project) => {
-              let cssClasses =
-                "w-full text-left px-2 py-1 rounded-sm my-1  hover:text-gray-200 hover:bg-gray-600 hover:cursor-pointer hover:rounded-md";
-              if (project.id === selectedProjectId) {
-                cssClasses += " bg-gray-800 text-gray-200 rounded-lg";
-              } else {
-                cssClasses += " text-gray-400";
-              }
-
-              return (
-                <li key={project.id}>
-                  <button
-                    onClick={() => onSelectProject(project.id)}
-                    className={cssClasses}
-                  >
-                    {project.title}
-                  </button>
-                </li>
-              );
-            })}
-          </ul>
+                return (
+                  <li key={project.id}>
+                    <button
+                      onClick={() => onSelectProject(project.id)}
+                      className={cssClasses}
+                    >
+                      {project.title}
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
         </div>
       </div>
     </>
