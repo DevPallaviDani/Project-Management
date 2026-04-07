@@ -1,0 +1,84 @@
+import React from "react";
+import useProjects from "../hooks/useProjects";
+import Header from "../components/layout/Header";
+import StatsGrid from "../components/stats/StatsGrid";
+import QuickActionBar from "../components/dashboard/QuickActionBar";
+import SectionWrapper from "../components/common/SectionWrapper";
+import { PlusCircle } from "lucide-react";
+import NewTask from "../features/tasks/NewTask";
+import ItemCard from "../components/common/ItemCard";
+
+function Dashboard() {
+  const stats = useProjects();
+  const { showModal, selectedStatus, onCloseModal,handleAddTask } = useProjects();
+  return (
+    <div className="h-screen flex flex-col overflow-hidden">
+      {/* <Header /> */}
+      <Header />
+      {/* {showModal && (
+        <NewTask
+          onAddTask={(task) => {
+            handleAddTask({ ...task, status: selectedStatus });
+            onCloseModal();
+          }}
+          onClose={onCloseModal}
+        />
+      )} */}
+      <div className="flex-1 p-6">
+        {/* STATS */}
+        <StatsGrid stats={stats} />
+        <QuickActionBar />
+
+        <div className="grid grid-cols-2 gap-6 h-[400px] ">
+          <div className="h-full overflow-x-auto">
+            <SectionWrapper title="Assigned Tasks">
+              {stats.tasks
+                .filter((task) => task.status === "todo")
+                .slice(0, 4)
+                .map((task) => {
+                  const project = stats.projects.find(
+                    (p) => p.id === task.projectId,
+                  );
+                  return (
+                    <ItemCard
+                      key={task.id}
+                      title={task.text}
+                      description={project?.title || "No Project"}
+                      dueDate={!task.duDate ? `${task.dueDate}` : "03-04-2026"}
+                      task={task}
+                    />
+                  );
+                })}
+            </SectionWrapper>
+          </div>
+          <div className="h-full">
+            <SectionWrapper title="Projects">
+              <div className="grid grid-cols-2 gap-1">
+                {stats.projects.slice(0, 8).map((project) => {
+                  const projectTasks = stats.tasks.filter(
+                    (task) => task.projectId === project.id,
+                  );
+
+                  return (
+                    <ItemCard
+                      key={project.id}
+                      title={project.title}
+                      description={
+                        projectTasks.length
+                          ? `${projectTasks.length} tasks`
+                          : "NO TASK"
+                      }
+                      dueDate={project.dueDate}
+                    />
+                  );
+                })}
+              </div>
+            </SectionWrapper>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default Dashboard;
