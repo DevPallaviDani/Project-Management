@@ -1,16 +1,19 @@
-import React, { useRef } from "react";
+import React, { useRef,useState } from "react";
 import Input from "../../components/UI/Input.jsx";
 import Modal from "../../components/UI/Modal.jsx";
 function NewProject({ onAddNewProject, onCancel }) {
   const modal = useRef();
-  const titleRef = useRef();
-  const descriptionRef = useRef();
-  const dueDateRef = useRef();
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+
+  const [dueDate, setDueDate] = useState("");
 
   function handleSave() {
-    const enteredTitle = titleRef.current?.value || "";
-    const enteredDescription = descriptionRef.current?.value || "";
-    const enteredDueDate = dueDateRef.current?.value || "";
+    const enteredTitle =title;
+    const enteredDescription = description;
+    const enteredDueDate = dueDate;
+
+    console.log(`Title: ${enteredTitle}, Description: ${enteredDescription}, DueDate: ${enteredDueDate}`);
     //validations
     if (
       enteredTitle.trim() === "" ||
@@ -63,9 +66,9 @@ function NewProject({ onAddNewProject, onCancel }) {
           </li>
         </menu>
         <div>
-          <Input type="text" ref={titleRef} label="title" />
-          <Input ref={descriptionRef} label="Description" textarea />
-          <Input type="date" ref={dueDateRef} label="Due date" />
+          <Input type="text" value={title} label="title" onChange={(e)=> setTitle(e.target.value)}/>
+          <Input value={description} label="Description" textarea onChange={(e)=>setDescription(e.target.value)} />
+          <Input type="date" value={dueDate} label="Due date" onChange={(e)=>setDueDate(e.target.value)} />
         </div>
       </div>
     </>
