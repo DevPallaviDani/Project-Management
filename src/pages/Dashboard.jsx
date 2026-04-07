@@ -4,26 +4,16 @@ import Header from "../components/layout/Header";
 import StatsGrid from "../components/stats/StatsGrid";
 import QuickActionBar from "../components/dashboard/QuickActionBar";
 import SectionWrapper from "../components/common/SectionWrapper";
-import { PlusCircle } from "lucide-react";
-import NewTask from "../features/tasks/NewTask";
+
 import ItemCard from "../components/common/ItemCard";
 
 function Dashboard() {
   const stats = useProjects();
-  const { showModal, selectedStatus, onCloseModal,handleAddTask } = useProjects();
   return (
     <div className="h-screen flex flex-col overflow-hidden">
-      {/* <Header /> */}
+      {/* Header  */}
       <Header />
-      {/* {showModal && (
-        <NewTask
-          onAddTask={(task) => {
-            handleAddTask({ ...task, status: selectedStatus });
-            onCloseModal();
-          }}
-          onClose={onCloseModal}
-        />
-      )} */}
+
       <div className="flex-1 p-6">
         {/* STATS */}
         <StatsGrid stats={stats} />

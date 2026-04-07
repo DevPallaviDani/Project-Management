@@ -9,20 +9,9 @@ function QuickActionBar() {
   return (
     <>
       <div className="flex justify-between p-5 border-b border-gray-300">
-        {/* {showModal && (
-          // <Modal onClose={onCloseModal}>
-            <NewTask
-              onAddTask={(task) => {
-                onAddTask({ ...task, status: selectedStatus });
-                setShowModal(false);
-                console.log("clicked new task:")
-              }}
-              onClose={() => setShowModal(false)}
-            />
-          // </Modal>
-        )} */}
+      
         <div>
-          <button onClick={()=>openModal("todo")}>Add Task</button>
+          <Button onClick={()=>openModal("todo")}>Add Task</Button>
         </div>
         <div>
           <button>Add Project</button>

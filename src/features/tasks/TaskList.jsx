@@ -6,17 +6,10 @@ import ItemCard from "../../components/common/ItemCard";
 import useProjects from "../../hooks/useProjects";
 
 function TaskList({ tasks, onAddTask, onDeleteTask, onMoveTask }) {
-  const { showModal, setShowModal, openModal, onCloseModal } = useProjects();
-  const [showNewTask, setShowNewTask] = useState(false);
-  const [selectedStatus, setSelectedStatus] = useState("todo");
+  const { handleDeleteTask, openModal, handleMoveTask } = useProjects();
 
   const handleAddClick = (status) => {
-    console.log("new task cliked", status);
-
-    setSelectedStatus(status);
-    setShowNewTask(true);
-    setShowModal(true);
-    openModal();
+    openModal(status);
   };
 
   {
@@ -24,7 +17,7 @@ function TaskList({ tasks, onAddTask, onDeleteTask, onMoveTask }) {
       <div className="text-center my-4">
         <p className="text-stone-500"> No tasks yet</p>
         <p className="text-sm text-stone-400">
-          Start by sdding your first task!{" "}
+          Start by adding your first task!{" "}
         </p>
       </div>
     );
@@ -36,20 +29,7 @@ function TaskList({ tasks, onAddTask, onDeleteTask, onMoveTask }) {
   return (
     <div>
       <h2 className="text-2xl font-bold text-stone-700 mb-4">Tasks</h2>
-      {/* {showNewTask && (
-        <NewTask onAddTask={onAddTask} onDeleteTask={onDeleteTask} />
-      )} */}
-      {showNewTask && (
-        // <Modal onClose={closeModal}>
-        <NewTask
-          onAddTask={(task) => {
-            onAddTask({ ...task, status: selectedStatus });
-            setShowModal(false);
-          }}
-          onClose={onCloseModal}
-        />
-        // </Modal>
-      )}
+
       {tasks.length === 0 && (
         <p className="text-stone-800 my-4">No task yet. Add your first task!</p>
       )}
@@ -234,7 +214,7 @@ function TaskList({ tasks, onAddTask, onDeleteTask, onMoveTask }) {
                             Clear
                           </button>
                           <button
-                            onClick={() => onMoveTask(task.id, "progress")}
+                            onClick={() => onMoveTask(task.id, "done")}
                             className="text-xs text-blue-500"
                           >
                             {" "}
@@ -260,7 +240,7 @@ function TaskList({ tasks, onAddTask, onDeleteTask, onMoveTask }) {
                           dueDate={
                             !task.duDate ? `${task.dueDate}` : "03-04-2026"
                           }
-                          task={task}
+                          taskStatus={task.status}
                         />
                         <div className="flex flex-row justify-between">
                           <button
@@ -270,7 +250,7 @@ function TaskList({ tasks, onAddTask, onDeleteTask, onMoveTask }) {
                             Clear
                           </button>
                           <button
-                            onClick={() => onMoveTask(task.id, "progress")}
+                            onClick={() => onMoveTask(task.id, "todo")}
                             className="text-xs text-blue-500"
                           >
                             {" "}

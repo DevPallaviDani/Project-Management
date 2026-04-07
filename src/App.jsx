@@ -2,7 +2,7 @@ import { ProjectProvider } from "./contexts/ProjectContext";
 
 import TasksPage from "./pages/Tasks";
 import ProjectsPage from "./pages/Projects";
-
+import NewTask from "./features/tasks/NewTask";
 import useProjects from "./hooks/useProjects";
 import Sidebar from "./components/layout/Sidebar";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
@@ -13,7 +13,7 @@ function App() {
     useProjects();
   return (
     <>
-      <ProjectProvider>
+    
         <BrowserRouter>
           <div className="flex h-screen w-full bg-[#e3eaf1] dark:bg-[#0f172a] text-gray-800 dark:text-gray-200 overflow-hidden">
             <Sidebar />
@@ -26,10 +26,7 @@ function App() {
               </Routes>
             </div>
 
-           
-          </div>
-        </BrowserRouter>
- {/* 🔥 GLOBAL MODAL HERE */}
+            {/* 🔥 GLOBAL MODAL HERE */}
             {showModal && (
               <NewTask
                 onAddTask={(task) => {
@@ -39,13 +36,16 @@ function App() {
                 onClose={onCloseModal}
               />
             )}
+          </div>
+        </BrowserRouter>
+
         {/* <ProjectSidebar
           onStartAddProject={handleStartAddProject}
           projects={projectsState.projects}
           onSelectProject={handleSelectProject}
           selectedProjectId={projectsState.selectedProjectId}
         /> */}
-      </ProjectProvider>
+      
     </>
   );
 }
