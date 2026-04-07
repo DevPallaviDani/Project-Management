@@ -11,7 +11,7 @@ import { GrProjects } from "react-icons/gr";
 import { useState } from "react";
 import profile from "../../assets/images/profileavatar.png";
 import logo from "../../assets/images/klogo.png";
-import SidebarItem from "../UI/SideBarItem.jsx";
+import SidebarItem from "../UI/SidebarItem.jsx";
 import { SlCalender } from "react-icons/sl";
 
 
