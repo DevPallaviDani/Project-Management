@@ -1,12 +1,10 @@
 import React from "react";
-import { useState, useEffect } from "react";
-import NewProject from "./features/projects/NewProject";
-import NoProjectSelected from "./features/projects/NoProjectSelected";
-import ProjectSidebar from "./features/projects/ProjectSidebar";
-import SelectedProject from "./features/projects/SelectedProject";
-import Welcome from "./features/dashboard/Welcome";
-import Header from "./components/layout/Header";
-import { v4 as uuidv4 } from "uuid";
+
+
+import ProjectSidebar from "./features/projects/ProjectSidebar.jsx";
+
+import Header from "./components/layout/Header.jsx";
+
 function DashboardLayout() {
   return (
     <div className="flex h-screen bg-[#f8fafc] dark:bg-[#0f172a] text-gray-800 dark:text-gray-200">
