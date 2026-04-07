@@ -1,11 +1,11 @@
 import React from "react";
-import useProjects from "../hooks/useProjects";
-import Header from "../components/layout/Header";
-import StatsGrid from "../components/stats/StatsGrid";
-import QuickActionBar from "../components/dashboard/QuickActionBar";
-import SectionWrapper from "../components/common/SectionWrapper";
+import useProjects from "../hooks/useProjects.jsx";
+import Header from "../components/layout/Header.jsx";
+import StatsGrid from "../components/stats/StatsGrid.jsx";
+import QuickActionBar from "../components/dashboard/QuickActionBar.jsx";
+import SectionWrapper from "../components/common/SectionWrapper.jsx";
 
-import ItemCard from "../components/common/ItemCard";
+import ItemCard from "../components/common/ItemCard.jsx";
 
 function Dashboard() {
   const stats = useProjects();

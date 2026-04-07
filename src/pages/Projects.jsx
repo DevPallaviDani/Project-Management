@@ -1,6 +1,6 @@
 import React from "react";
-import useProjects from "../hooks/useProjects";
-import ProjectSidebar from "../features/projects/ProjectSidebar";
+import useProjects from "../hooks/useProjects.jsx";
+import ProjectSidebar from "../features/projects/ProjectSidebar.jsx";
 
 function Projects() {
   const projectsState = useProjects();

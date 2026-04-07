@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
-import Input from "../../components/UI/Input";
-import useProjects from "../../hooks/useProjects";
+import Input from "../../components/UI/Input.jsx";
+import useProjects from "../../hooks/useProjects.jsx";
 
 function NewTask({ onAddTask, onClose }) {
   const [enteredTask, setEnteredTask] = useState("");

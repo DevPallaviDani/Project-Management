@@ -1,8 +1,8 @@
 import React from "react";
-import Button from "../UI/Button";
-import Modal from "../UI/Modal"
-import useProjects from "../../hooks/useProjects";
-import NewTask from "../../features/tasks/NewTask";
+import Button from "../UI/Button.jsx";
+import Modal from "../UI/Modal.jsx"
+import useProjects from "../../hooks/useProjects.jsx";
+import NewTask from "../../features/tasks/NewTask.jsx";
 
 function QuickActionBar() {
   const { showModal, setShowModal, openModal, onCloseModal } = useProjects();

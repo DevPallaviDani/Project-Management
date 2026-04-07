@@ -1,7 +1,7 @@
 import React from "react";
-import Button from "../../components/UI/Button";
+import Button from "../../components/UI/Button.jsx";
 import projectlogo from "../../assets/images/noProjects.png";
-import Dashboard from "../../pages/dashboard";
+// import Dashboard from "../../pages/dashboard.jsx";
 
 const ProjectSidebar = ({
   onStartAddProject,

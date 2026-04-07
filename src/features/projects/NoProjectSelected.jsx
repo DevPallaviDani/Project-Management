@@ -1,5 +1,5 @@
 import React from "react";
-import Button from "../../components/UI/Button";
+import Button from "../../components/UI/Button.jsx";
 import noProject from "../../assets/images/noProjects.png"
 function NoProjectSelected({ onStartAddProject }) {
   return (

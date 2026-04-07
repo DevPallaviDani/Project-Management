@@ -1,6 +1,6 @@
 import React from "react";
-import TaskList from "../features/tasks/TaskList";
-import useProjects from "../hooks/useProjects";
+import TaskList from "../features/tasks/TaskList.jsx";
+import useProjects from "../hooks/useProjects.jsx";
 
 function Tasks() {
   const {

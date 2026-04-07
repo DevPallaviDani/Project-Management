@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import NewTask from "./NewTask";
-import SectionWrapper from "../../components/common/SectionWrapper";
-import ItemCard from "../../components/common/ItemCard";
+import NewTask from "./NewTask.jsx";
+import SectionWrapper from "../../components/common/SectionWrapper.jsx";
+import ItemCard from "../../components/common/ItemCard.jsx";
 
-import useProjects from "../../hooks/useProjects";
+import useProjects from "../../hooks/useProjects.jsx";
 
 function TaskList({ tasks, onAddTask, onDeleteTask, onMoveTask }) {
   const { handleDeleteTask, openModal, handleMoveTask } = useProjects();

@@ -1,12 +1,12 @@
 import { ProjectProvider } from "./contexts/ProjectContext";
 
-import TasksPage from "./pages/Tasks";
-import ProjectsPage from "./pages/Projects";
-import NewTask from "./features/tasks/NewTask";
-import useProjects from "./hooks/useProjects";
-import Sidebar from "./components/layout/Sidebar";
+import TasksPage from "./pages/Tasks.jsx";
+import ProjectsPage from "./pages/Projects.jsx";
+import NewTask from "./features/tasks/NewTask.jsx";
+import useProjects from "./hooks/useProjects.jsx";
+import Sidebar from "./components/layout/Sidebar.jsx";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Dashboard from "./pages/dashboard";
+import Dashboard from "./pages/Dashboard.jsx";
 
 function App() {
   const { showModal, selectedStatus, onCloseModal, handleAddTask } =

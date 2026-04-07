@@ -1,6 +1,6 @@
 import React from "react";
-import Tasks from "../tasks/TaskList";
-import useProjects from "../../hooks/useProjects";
+import Tasks from "../tasks/TaskList.jsx";
+import useProjects from "../../hooks/useProjects.jsx";
 
 function SelectedProject(
   {
