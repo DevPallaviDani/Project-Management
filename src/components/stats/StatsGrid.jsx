@@ -5,11 +5,11 @@ function StatsGrid({ stats }) {
   const { totalProjects, totalTasks, completedTasks } = stats;
 
   return (
-    <div className="grid grid-cols-4 gap-4 mb-6  justify-center">
+    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6 justify-center">
       <StatsCard title="Total Projects" value={totalProjects} />
       <StatsCard title="Total Tasks" value={totalTasks} />
       <StatsCard title="Completed Tasks" value={completedTasks} />
-      <StatsCard title="Assigned Tasks" value={totalProjects} />
+      <StatsCard title="Assigned Tasks" value={totalTasks} />
     
     </div>
   );

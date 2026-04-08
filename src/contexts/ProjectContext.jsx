@@ -7,15 +7,26 @@ import SelectedProject from "../features/projects/SelectedProject.jsx";
 const ProjectContext = createContext();
 
 export function ProjectProvider({ children }) {
-  const [showModal, setShowModal] = useState(false);
-  const [selectedStatus, setSelectedStatus] = useState("todo");
+  const [showTaskModal, setShowTaskModal] = useState(false);
+  const [selectedTaskStatus, setSelectedTaskStatus] = useState("todo");
 
-  const openModal = (selectedStatus = "todo") => {
-    setShowModal(true);
-    setSelectedStatus(selectedStatus);
+  const openTaskModal = (selectedTaskStatus) => {
+    setShowTaskModal(true);
+    setSelectedTaskStatus(selectedTaskStatus);
   };
-  const onCloseModal = () => {
-    setShowModal(false);
+  const onCloseTaskModal = () => {
+    setShowTaskModal(false);
+  };
+
+  const [showProjectModal, setShowProjectkModal] = useState(false);
+  const [selectedProjectStatus, setSelectedProjectStatus] = useState("started");
+
+  const openProjectModal = (selectedProjectStatus) => {
+    setShowProjectkModal(true);
+    setSelectedProjectStatus(selectedProjectStatus);
+  };
+  const onCloseProjectModal = () => {
+    setShowProjectkModal(false);
   };
 
   const [projectsState, setProjectsState] = useState(() => {
@@ -37,13 +48,13 @@ export function ProjectProvider({ children }) {
     /* PROJECT HANDLERS */
   }
 
-  function handleDeleteProject() {
+  function handleDeleteProject(projectId) {
     setProjectsState((prevState) => {
       return {
         ...prevState,
         selectedProjectId: undefined,
         projects: prevState.projects.filter(
-          (project) => project.id !== prevState.selectedProjectId,
+          (project) => project.id !== projectId,
         ),
       };
     });
@@ -107,20 +118,23 @@ export function ProjectProvider({ children }) {
   );
 
   function handleAddTask(taskData) {
-    const taskProject = projectsState.projects.find(
-      (project) => project.id === projectsState.selectedProjectId,
-    );
-
     setProjectsState((prevState) => {
       const taskId = uuidv4();
+
+      const taskProject = prevState.projects.find(
+        (project) => project.id === taskData.projectId,
+      );
       const newTask = {
         text: taskData.text,
-        projectId: prevState.selectedProjectId,
+        taskDescription: taskData.taskDescription,
+        projectId: taskData.projectId,
         taskProject: taskProject,
         dueDate: taskData.dueDate,
         id: taskId,
-        status: "todo",
+        status: selectedTaskStatus ? selectedTaskStatus : "todo",
+        priority: taskData.priority || "medium",
       };
+
       return {
         ...prevState,
         tasks: [newTask, ...prevState.tasks],
@@ -147,6 +161,23 @@ export function ProjectProvider({ children }) {
       return {
         ...prevState,
         tasks: updatedTasks,
+      };
+    });
+  }
+
+  {
+    /*  HANDLE MOVE PROJECTS */
+  }
+  function handleMoveProjects(projectId, newStatus) {
+    setProjectsState((prevState) => {
+      const updatedprojects = prevState.projects.map((project) =>
+        project.id === projectId
+          ? { ...project, projectStatus: newStatus }
+          : project,
+      );
+      return {
+        ...prevState,
+        projects: updatedprojects,
       };
     });
   }
@@ -198,6 +229,16 @@ export function ProjectProvider({ children }) {
     completed: doneTasks.length,
     pending: todoTasks.length + progressTasks.length,
   };
+  // CLEAR DATA
+  function handleResetStorage() {
+    localStorage.removeItem("projectState");
+
+    setProjectsState({
+      selectedProjectId: undefined,
+      projects: [],
+      tasks: [],
+    });
+  }
 
   return (
     <ProjectContext.Provider
@@ -219,8 +260,10 @@ export function ProjectProvider({ children }) {
         progressTasks,
         content,
         projectStats,
-        showModal,
-        selectedStatus,
+        showTaskModal,
+        selectedTaskStatus,       
+        showProjectModal,
+        selectedProjectStatus,
 
         // actions
         handleAddProject,
@@ -228,12 +271,20 @@ export function ProjectProvider({ children }) {
         handleCancelAddProject,
         handleStartAddProject,
         handleSelectProject,
+        handleMoveProjects,
         handleAddTask,
         handleDeleteTask,
         handleMoveTask,
-        openModal,
-        onCloseModal,
-        setShowModal,
+
+        openTaskModal,
+        onCloseTaskModal,
+        setShowTaskModal,
+
+        openProjectModal,
+        onCloseProjectModal,
+        setShowProjectkModal,
+
+        handleResetStorage,
       }}
     >
       {children}

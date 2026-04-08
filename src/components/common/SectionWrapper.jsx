@@ -1,7 +1,7 @@
 import React from "react";
 import { PlusCircle } from "lucide-react";
 
-function SectionWrapper({ title, children, buttonHandler, onAdd }) {
+function SectionWrapper({ title, children, count, onAdd }) {
   return (
     <>
       <div
@@ -11,7 +11,10 @@ function SectionWrapper({ title, children, buttonHandler, onAdd }) {
         //  p-5 rounded-xl"
       >
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold  ">{title}</h2>
+          <div >
+            <span className="text-lg font-semibold p-1 ">{title}</span>
+            <span className="text-sm text-gray-500 ">{`(${count})`}</span>
+          </div>
           {onAdd && (
             <PlusCircle
               size={20}

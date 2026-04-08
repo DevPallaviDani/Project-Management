@@ -8,20 +8,39 @@ import SectionWrapper from "../components/common/SectionWrapper.jsx";
 import ItemCard from "../components/common/ItemCard.jsx";
 
 function Dashboard() {
+  const { openTaskModal, openProjectModal, handleResetStorage } = useProjects();
+
+  const handleAddClick = (selectedstatus, modalFor) => {
+    if (modalFor === "Task") {
+      openTaskModal(selectedstatus);
+    }
+    if (modalFor === "Project") {
+      openProjectModal(selectedstatus);
+    } else {
+      return;
+    }
+  };
   const stats = useProjects();
   return (
-    <div className="h-screen flex flex-col overflow-hidden">
-      {/* Header  */}
-      <Header />
-
-      <div className="flex-1 p-6">
+    <div className="min-h-screen flex flex-col dark:bg-[#0f172a] px-2 md:px-2 py-4">
+       
         {/* STATS */}
         <StatsGrid stats={stats} />
-        <QuickActionBar />
+        <div className="mt-4">
+          <QuickActionBar />
+          <button onClick={handleResetStorage}>Reset All Data</button>
+        </div>
 
-        <div className="grid grid-cols-2 gap-6 h-[400px] ">
-          <div className="h-full overflow-x-auto">
-            <SectionWrapper title="Assigned Tasks">
+        {/* MAIN GRID */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-4">
+          {/* TASKS */}
+          <div className="overflow-hidden">
+            <SectionWrapper
+              title="Assigned Tasks"
+              count={stats.tasks.length}
+              onAdd={() => handleAddClick("todo", "Task")}
+            >
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {stats.tasks
                 .filter((task) => task.status === "todo")
                 .slice(0, 4)
@@ -31,19 +50,27 @@ function Dashboard() {
                   );
                   return (
                     <ItemCard
-                      key={task.id}
-                      title={task.text}
-                      description={project?.title || "No Project"}
-                      dueDate={!task.duDate ? `${task.dueDate}` : "03-04-2026"}
-                      task={task}
+                       id={task.id}
+                          title={task.text}
+                          description={task.taskProject?.title || "No Project"}
+                          dueDate={
+                            task.duDate ? "03-04-2026" : `${task.dueDate}`
+                          }
+                          taskStatus={task.status}
+                          priority={task.priority}
                     />
                   );
                 })}
+                </div>
             </SectionWrapper>
           </div>
-          <div className="h-full">
-            <SectionWrapper title="Projects">
-              <div className="grid grid-cols-2 gap-1">
+          <div>
+            <SectionWrapper
+              title="Projects"
+              count={stats.projects.length}
+              onAdd={() => handleAddClick("started", "Project")}
+            >
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {stats.projects.slice(0, 8).map((project) => {
                   const projectTasks = stats.tasks.filter(
                     (task) => task.projectId === project.id,
@@ -67,7 +94,7 @@ function Dashboard() {
           </div>
         </div>
       </div>
-    </div>
+  
   );
 }
 

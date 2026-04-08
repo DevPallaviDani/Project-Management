@@ -4,13 +4,12 @@ import useProjects from "../../hooks/useProjects.jsx";
 
 function NewTask({ onAddTask, onClose }) {
   const [enteredTask, setEnteredTask] = useState("");
+  const [taskDescription, setTaskDescription] = useState("");
   const { onCloseModal, projects } = useProjects();
   const titleRef = useRef();
   const projectRef = useRef();
   const dueDateRef = useRef();
-  function handleChange(e) {
-    setEnteredTask(e.target.value);
-  }
+  
   function handleSubmit() {
     const enteredDueDate = dueDateRef.current.value;
     const projectId = projectRef.current.value;
@@ -19,10 +18,12 @@ function NewTask({ onAddTask, onClose }) {
     }
     onAddTask({
       text: enteredTask,
+      taskDescription:taskDescription,
       dueDate: enteredDueDate,
       projectId: projectId,
     });
     setEnteredTask("");
+    setTaskDescription("")
     dueDateRef.current.value = "";
     projectRef.current.value = "";
     onClose();
@@ -34,7 +35,7 @@ function NewTask({ onAddTask, onClose }) {
     >
       {/* Modal Box */}
       <div
-        className="bg-white dark:bg-[#1c253b] p-6 rounded-2xl shadow-xl
+        className="bg-white dark:bg-[#1c253b] p-6 md:p-6 rounded-2xl shadow-xl
         w-full max-w-xl "
         onClick={(e) => e.stopPropagation()}
       >
@@ -53,6 +54,12 @@ function NewTask({ onAddTask, onClose }) {
             placeholder="Enter task..."
             className="w-full p-2 border rounded mb-4"
           />
+           <Input
+              value={taskDescription}
+              label="Description"
+              textarea
+              onChange={(e) => setTaskDescription(e.target.value)}
+            />
 
           <select
             ref={projectRef}
