@@ -22,10 +22,10 @@ Managing multiple projects and tasks can become messy without proper organizatio
 * 📊 Track project progress
 * 🎯 Task status management (To Do, In Progress, Done)
 * ⚡ Quick action bar for faster workflow
-* 🧩 Drag & Drop support (if implemented)
-* 🌙 Dark mode UI (if implemented)
+* 🧩 Drag & Drop support 
+* 🌙 Dark mode UI 
 
----
+-----------------------------------------------------------------------------------------------------------------------------------------------------
 
 ## 🖼️ Screenshots
 
@@ -69,6 +69,12 @@ src/
 * 📅 Deadline reminders
 * 📈 Advanced analytics & charts
 * 👥 Multi-user collaboration
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+🌐 Live Demo
+
+karya-hub-dashboard-zeta.vercel.app
 
 ---------------------------------------------------------------------------------------------------------------------------------------------
 
