@@ -28,8 +28,9 @@ function App() {
     <>
       <BrowserRouter>
         <div
-          className="flex h-screen bg-[#e3eaf1] 
-        dark:bg-[#0f172a] text-gray-800 dark:text-gray-200 overflow-hidden"
+          className="flex h-screen gap-1
+           bg-[#e3eaf1] dark:bg-[#0f172a] text-gray-800 dark:text-gray-200
+            overflow-y-auto no-scrollbar"
         >
           <Sidebar
             mobileOpen={isMobileSidebarOpen}

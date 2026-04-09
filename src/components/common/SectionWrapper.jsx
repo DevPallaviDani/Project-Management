@@ -11,9 +11,11 @@ function SectionWrapper({ title, children, count, onAdd }) {
         //  p-5 rounded-xl"
       >
         <div className="flex items-center justify-between">
-          <div >
+          <div>
             <span className="text-lg font-semibold p-1 ">{title}</span>
-            <span className="text-sm text-gray-500 ">{`(${count})`}</span>
+            <span className=" px-2 py-1 rounded-xl text-sm text-gray-200 bg-gray-500 dark:text-gray-800 dark:bg-slate-100">
+              {count}
+            </span>
           </div>
           {onAdd && (
             <PlusCircle

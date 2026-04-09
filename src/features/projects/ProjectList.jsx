@@ -29,7 +29,7 @@ function ProjectList({ handleDeleteProject, handleMoveProjects }) {
   };
   return (
     <>
-      <div className="grid grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {projects.length > 0 && (
           <>
             <div className="h-full overflow-x-auto">

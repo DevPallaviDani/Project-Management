@@ -1,6 +1,7 @@
 import React, { useState, useRef } from "react";
 import Input from "../../components/UI/Input.jsx";
 import useProjects from "../../hooks/useProjects.jsx";
+import Button from "../../components/UI/Button.jsx";
 
 function NewTask({ onAddTask, onClose }) {
   const [enteredTask, setEnteredTask] = useState("");
@@ -65,7 +66,7 @@ function NewTask({ onAddTask, onClose }) {
             ref={projectRef}
             id="projects"
             name="projects"
-            className="w-full p-2 border rounded mb-4"
+            className="w-full p-2 border rounded mb-4 dark:text-gray-500"
           >
             <option value="">Select Project</option>
             {projects.length > 0 &&
@@ -87,18 +88,18 @@ function NewTask({ onAddTask, onClose }) {
         </div>
         {/* Actions */}
         <div className="flex justify-end gap-2">
-          <button
+          <Button
             onClick={onClose}
-            className="px-3 py-1 text-sm bg-gray-200 rounded"
+            className="px-3 py-1 text-sm bg-gray-200 rounded  dark:bg-gray-800 dark:text-gray-200"
           >
             Cancel
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={handleSubmit}
             className="px-3 py-1 text-sm bg-blue-500 text-white rounded"
           >
             Add
-          </button>
+          </Button>
         </div>
       </div>
     </div>

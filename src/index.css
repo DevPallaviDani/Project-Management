@@ -11,3 +11,9 @@ html {
     font-size: 12px;
   }
 }
+.no-scrollbar::-webkit-scrollbar{
+  display: none;
+}
+.no-scrollbar{
+  scrollbar-width: none;
+}

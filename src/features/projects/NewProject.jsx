@@ -1,6 +1,7 @@
 import React, { useRef, useState } from "react";
 import Input from "../../components/UI/Input.jsx";
 import Modal from "../../components/UI/Modal.jsx";
+import Button from "../../components/UI/Button.jsx";
 function NewProject({ onAddNewProject, onClose }) {
   const modal = useRef();
   const [title, setTitle] = useState("");
@@ -130,18 +131,18 @@ function NewProject({ onAddNewProject, onClose }) {
           </div>
           {/* ACTIONS */}
           <div className="flex justify-end gap-2">
-            <button
+            <Button
               onClick={onClose}
-              className="px-3 py-1 text-sm bg-gray-200 rounded"
+              className="px-3 py-1 text-sm bg-gray-200 rounded dark:bg-gray-800 dark:text-gray-200"
             >
               Cancel
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={handleSave}
               className="px-3 py-1 text-sm bg-blue-500 text-white rounded"
             >
               Add
-            </button>
+            </Button>
           </div>
         </div>
       </div>

@@ -57,12 +57,12 @@ function TaskList({ tasks, onAddTask, onDeleteTask, onMoveTask }) {
     <div className="flex-1">
       <span className="text-md font-bold text-stone-700 mb-4 p-4">Task List</span>
 
-      <div className="grid grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {tasks.length > 0 && (
           <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
             <DroppableColumn id="todo" className="h-full overflow-x-auto">
               <SectionWrapper
-                title="To do"
+                title="To-do"
                 count={todoTasks}
                 onAdd={() => handleAddClick("todo")}
               >
@@ -78,7 +78,8 @@ function TaskList({ tasks, onAddTask, onDeleteTask, onMoveTask }) {
                         <ItemCard
                           id={task.id}
                           title={task.text}
-                          description={task.taskProject?.title || "No Project"}
+                          subtitle={task.taskProject?.title || "No Project"}
+                          description={task.taskDescription}
                           dueDate={
                             task.duDate ? "03-04-2026" : `${task.dueDate}`
                           }
