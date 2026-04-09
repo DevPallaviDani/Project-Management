@@ -74,7 +74,7 @@ src/
 
 🌐 Live Demo
 
-karya-hub-dashboard-zeta.vercel.app
+[karya-hub-dashboard-zeta.vercel.app](https://karya-hub-dashboard-zeta.vercel.app/)
 
 ---------------------------------------------------------------------------------------------------------------------------------------------
 
