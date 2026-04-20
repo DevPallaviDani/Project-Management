@@ -5,7 +5,7 @@ import CalendarPage from "./pages/Calendar.jsx"
 import NewTask from "./features/tasks/NewTask.jsx";
 import useWorkspace from "./hooks/useWorkspace.jsx";
 import Sidebar from "./components/layout/Sidebar.jsx";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route,HashRouter } from "react-router-dom";
 import Dashboard from "./pages/Dashboard.jsx";
 import Header from "./components/layout/Header.jsx";
 import { Menu } from "lucide-react";
@@ -25,7 +25,7 @@ function App() {
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   return (
     <>
-      <BrowserRouter>
+      <HashRouter>
         <div
           className="flex w-full min-h-screen gap-1  bg-bg text-text-primary pr-2 sm:m-1 md:m-0
            overflow-y-auto no-scrollbar "
@@ -71,7 +71,7 @@ function App() {
             />
           )}
         </div>
-      </BrowserRouter>
+      </HashRouter>
 
     
     </>
