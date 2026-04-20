@@ -103,7 +103,7 @@ function Dashboard() {
                       </Button>
                     </div>
                   )}
-                  {filteredTask
+                  {(filteredTask || [])
                     //  assignedTasks
                     .slice(0, 4)
                     .map((task) => {
@@ -145,7 +145,7 @@ function Dashboard() {
                 onAdd={() => handleAddClick("started", "Project")}
               >
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {projects
+                  {(projects || [])
                     .filter((p) => p.projectStatus !== "completed")
                     .slice(0, 8)
                     .map((project) => {

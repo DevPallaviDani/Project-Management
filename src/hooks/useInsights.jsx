@@ -88,7 +88,7 @@ export default function useInsights() {
   )
   
 
-  const deadlines = tasks
+  const deadlines = (tasks || [])
     .filter((t) => t.dueDate && t.status !== "done")
     .sort((a, b) => new Date(b.dueDate) - new Date(a.dueDate))
     .slice(0, 5)
@@ -104,8 +104,7 @@ export default function useInsights() {
 
   // Activity
 
-  const activities = activityLog
-  .slice(-5)
+  const activities = activityLog?.slice(-5)
   .reverse();
 
   //   STATS (GLOBAL)
