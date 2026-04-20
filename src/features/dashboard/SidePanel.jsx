@@ -42,12 +42,10 @@ function QuickButton({ label, onClick }) {
     </button>
   );
 }
-function SidePanel({tasks,onDateSelect}) {
- 
+function SidePanel({ tasks, onDateSelect }) {
   const { deadlines, activities, upcomingDeadLines } = useInsights();
 
   // console.log("upcomingDeadLines", upcomingDeadLines);
-
 
   function formatTime(timestamp) {
     const now = new Date();
@@ -62,13 +60,16 @@ function SidePanel({tasks,onDateSelect}) {
     if (hours < 24) return `${hours}hrs ago`;
 
     const days = Math.floor(hours / 24);
-    if (days > 24) return `${days}d ago`;
+    if (days < 30) return `${days}d ago`;
   }
 
   return (
-    <div className="hidden lg:flex flex-col w-80 px-2 py-2 gap-2  bg-sidebar rounded-md overflow-y-auto">
+    <div
+      className="hidden lg:flex flex-col w-80 px-2 py-2 gap-2 
+     bg-sidebar  overflow-y-auto"
+    >
       <section title="Calendar">
-        <MiniCalendar tasks={tasks} onDateSelect={onDateSelect}/>
+        <MiniCalendar tasks={tasks} onDateSelect={onDateSelect} />
       </section>
       <section title="Upcoming Deadlines">
         <div className=" p-1 rounded-xl">
@@ -118,9 +119,9 @@ function SidePanel({tasks,onDateSelect}) {
                 <div key={index} className="flex flex-col text-sm">
                   <span className="text-gray-700 dark:text-gray-200">
                     {item.message}
-                  </span>
-                  <span className="text-xs text-gray-400">
-                    {formatTime(item.timestamp)}
+                    <span className="ml-1 text-xs text-gray-400">
+                      {formatTime(item.timestamp)}
+                    </span>
                   </span>
                 </div>
               ))

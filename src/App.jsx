@@ -27,17 +27,17 @@ function App() {
     <>
       <HashRouter>
         <div
-          className="flex w-full min-h-screen gap-1  bg-bg text-text-primary pr-2 sm:m-1 md:m-0
+          className="flex w-full h-screen gap-1 bg-bg text-text-primary pr-2 sm:m-1 md:m-0
            overflow-y-auto no-scrollbar "
         >
           <Sidebar
             mobileOpen={isMobileSidebarOpen}
             onCloseMobile={() => setIsMobileSidebarOpen(false)}
           />
-          <div className="flex-1 mr-2">
+          <div className="flex-1 w-full mr-2">
           
             <Header />
-            <main className="flex-1 overflow-y-auto bg-bg pt-15 pb-20 md:pt-0 md:pb-0 md:p-4">
+            <main className=" w-full bg-bg pt-15 pb-20 md:pt-0 md:pb-0 md:p-4">
               <Routes>
                 <Route path="/" element={<Dashboard />} />
                 <Route path="/projects" element={<ProjectsPage />} />

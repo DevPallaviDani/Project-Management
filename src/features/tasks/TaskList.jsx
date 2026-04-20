@@ -81,9 +81,7 @@ function TaskList({ tasks, onMoveTask }) {
       <div className="grid grid-cols-1 md:grid-cols-3 ">
         {tasks.length > 0 && (
           <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-            <DroppableColumn id="todo" className="h-[400px] overflow-y-auto"
-            // className="h-full overflow-x-auto  "
-            >
+            <DroppableColumn id="todo" className="h-full overflow-x-auto  ">
               <SectionWrapper
                 title="To-do"
                 count={todoTasks}
@@ -193,9 +191,7 @@ function TaskList({ tasks, onMoveTask }) {
                 </div>
               </SectionWrapper>
             </DroppableColumn>
-            <DroppableColumn id="done" className=" overflow-y-auto no-scrollbar"
-            // className="h-full overflow-x-auto"
-            >
+            <DroppableColumn id="done" className="h-full overflow-x-auto">
               <SectionWrapper
                 title="Done"
                 count={doneTasks}

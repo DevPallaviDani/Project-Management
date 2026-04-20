@@ -12,8 +12,7 @@ function SectionWrapper({
   return (
     <>
       <div
-        className=" transition rounded-xl
-    shadow h-full flex flex-col p-5   "
+        className=" transition rounded-xl shadow h-full flex flex-col p-5"
         //  "h-full flex flex-col mt-2 bg-gray-500
         //  p-5 rounded-xl"
       >

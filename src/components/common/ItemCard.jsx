@@ -94,7 +94,7 @@ function ItemCard({
                 {dueDate}
               </span>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="relative group flex items-center gap-2">
               {/* Due Date */}
               {assignee && (
                 <div className="flex  items-center gap-2">
@@ -106,6 +106,14 @@ function ItemCard({
                   {/* <span className="text-lg text-text-secondary">
                 {assignee?.name}
               </span> */}
+                  <span
+                    className="absolute bottom-5 right-1 text-sm 
+              text-text-subheading  whitespace-nowrap opacity-0 
+              group-hover:opacity-100 p-2  transition pointer-events-none z-50
+              "
+                  >
+                    {assignee?.name}
+                  </span>
                 </div>
               )}
 

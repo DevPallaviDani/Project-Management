@@ -74,6 +74,9 @@ export default function useInsights() {
   };
 
   const upcomingTasks = getUpComingTasks(tasks);
+// console.log(upcomingTasks.overdue);
+
+const overDueTasks =upcomingTasks.overdue;
 
 
   const upcomingDeadLines = Object.values(upcomingTasks).flatMap((section) =>
@@ -120,10 +123,12 @@ export default function useInsights() {
     deadlines,
     activities,
     upcomingDeadLines,
+    upcomingTasks,
+    overDueTasks,
     stats: {
       totalProjects,
       totalTasks,
-      completedTasks,
+      completedTasks,      
       completionRate:
         totalTasks === 0 ? 0 : Math.round((completedTasks / todoTasks) * 100),
     },

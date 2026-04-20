@@ -75,14 +75,13 @@ function Dashboard() {
 
   return (
     <div
-      className="flex max-auto w-full  md:px-2  shadow-sm rounded-3xl  
+      className="flex max-auto w-full md:px-2 rounded-3xl  
     muted-bg text-text-primary overflow-x-hidden "
     >
       <div className="grid grid-cols-1 md:grid-cols-[80%_20%] gap-4 mt-20 md:mt-2">
         <div>
           {/* STATS */}
           <StatsGrid />
-
           {/* MAIN GRID */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-4">
             {/* TASKS */}
@@ -106,10 +105,7 @@ function Dashboard() {
                   {(filteredTask || [])
                     //  assignedTasks
                     .slice(0, 4)
-                    .map((task) => {
-                      console.log("filteredTask ", filteredTask);
-                      console.log("Task  ", task);
-
+                    .map((task) => {   
                       const project = getProjectByTask(task);
                       const assignee = getAssignee(task.assigneeId);
                       const tag = TAGS.find((t) => t.id === task?.tagId);
