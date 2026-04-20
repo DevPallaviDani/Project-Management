@@ -20,9 +20,9 @@ function ToggleTheme() {
     <div>
       <button
         onClick={() => setDarkMode(!darkMode)}
-        className="p-2 rounded-lg bg-[#e3eaf1]    dark:bg-[#0f172a] flex items-center"
+        className="p-2 rounded-lg bg-transparent  flex items-center"
       >
-        {darkMode ? <MdDarkMode size={25} color="#748fa5" /> : <MdLightMode size={25} color="#748fa5"/>}
+        {darkMode ? <MdDarkMode size={18} color="#748fa5" /> : <MdLightMode size={18} color="#748fa5"/>}
            {/* {darkMode ? "🌙 Dark" : "☀️ Light"} */}
       </button>
     </div>

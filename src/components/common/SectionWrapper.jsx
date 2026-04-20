@@ -1,20 +1,34 @@
 import React from "react";
 import { PlusCircle } from "lucide-react";
 
-function SectionWrapper({ title, children, count, onAdd }) {
+function SectionWrapper({
+  title,
+  children,
+  count,
+  onAdd,
+  Icon,
+  color = "transparent",
+}) {
   return (
     <>
       <div
-        className="bg-white dark:bg-gray-800 rounded-xl
-    shadow h-full flex flex-col p-5 "
+        className=" transition rounded-xl
+    shadow h-full flex flex-col p-5   "
         //  "h-full flex flex-col mt-2 bg-gray-500
         //  p-5 rounded-xl"
       >
-        <div className="flex items-center justify-between">
-          <div>
-            <span className="text-lg font-semibold p-1 ">{title}</span>
-            <span className=" px-2 py-1 rounded-xl text-sm text-gray-200 bg-gray-500 dark:text-gray-800 dark:bg-slate-100">
-              {count}
+        <div
+          className={`flex p-1 items-center justify-between bg-muted-bg dark:text-gray-600 rounded-lg`}
+        >
+          <div className="flex items-center gap-1">
+            {Icon && <Icon size={18} className={color} />}
+
+            <span className="text-lg font-semibold p-1 text-text-strong ">
+              {title}
+            </span>
+
+            <span className="min-w-[20px] h-5 py-4 px-3 flex items-center justify-center rounded-full  text-sm  bg-bg text-text-primary ">
+              {count > 99 ? "99+" : count}{" "}
             </span>
           </div>
           {onAdd && (
@@ -26,7 +40,7 @@ function SectionWrapper({ title, children, count, onAdd }) {
           )}
         </div>
 
-        <div className="mt-3 border-b "></div>
+        <div className="mt-1 border-b "></div>
         <div className="grid gap-3 mt-5">{children}</div>
       </div>
     </>

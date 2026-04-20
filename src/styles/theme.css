@@ -1,0 +1,72 @@
+:root {
+   /* Background hierarchy */
+
+  --color-bg: #f2f8f9;         /* page background */
+  --color-card: #ffffff;       /* cards, modals */
+  --color-muted-bg: #deedef;   /* lists, sections */
+
+  --color-sidebar: #ffffff;
+  --color-header: #f8fafc;
+
+  /* Text */
+  --color-text-primary: #1b2a31;
+  --color-text-secondary: #385b66;
+  --color-text-muted: #488592;
+
+  /* Borders */
+  --color-border: #c1dce0;
+  --color-divider: #96c2ca;
+
+/* HEADING */
+--color-heading: var(--color-text-primary);
+--color-subheading: var(--color-text-secondary);
+
+/* BUTTON   */
+/* Primary Button */
+--btn-primary-bg: #62a0ac;
+--btn-primary-hover: #488592;
+--btn-primary-text: #ffffff;
+
+/* Secondary Button */
+--btn-secondary-bg: var(--color-card);
+--btn-secondary-hover: var(--color-muted-bg);
+--btn-secondary-text: var(--color-text-primary);
+--btn-secondary-border: var(--color-border);
+
+/* Ghost Button */
+--btn-ghost-text: #62a0ac;
+--btn-ghost-hover: rgba(98, 160, 172, 0.1);
+
+/* Danger Button */
+--btn-danger-bg: #ef4444;
+--btn-danger-hover: #dc2626;
+--btn-danger-text: #ffffff;
+
+}
+
+.dark {
+  --color-bg: #1b2a31;
+  --color-card: #2f424a;
+  --color-muted-bg: #344d56;
+
+  --color-sidebar: #1b2a31;
+  --color-header: #1b2a31;
+
+  --color-text-primary: #f2f8f9;
+  --color-text-secondary: #c1dce0;
+  --color-text-muted: #96c2ca;
+
+  --color-border: #385b66;
+  --color-divider: #3e6e7c;
+
+--btn-primary-text: #1b2a31; /* better contrast */
+
+  --btn-secondary-bg: #2f424a;
+  --btn-secondary-hover: #344d56;
+  --btn-secondary-text: #f2f8f9;
+  --btn-secondary-border: #385b66;
+
+  --btn-ghost-text: #96c2ca;
+  --btn-ghost-hover: rgba(150, 194, 202, 0.15);
+  
+}

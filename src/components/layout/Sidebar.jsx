@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import {
   Home,
   LucideSettings,
@@ -13,66 +13,87 @@ import profile from "../../assets/images/profileavatar.png";
 import logo from "../../assets/images/klogo.png";
 import SidebarItem from "../UI/SidebarItem.jsx";
 import { SlCalender } from "react-icons/sl";
+import { loggedInUser } from "../../constants/global.js";
 
 function Sidebar({ mobileOpen = false, onCloseMobile = () => {} }) {
   const [isCollapsed, setIsCollapsed] = useState(false);
+
+  const iconStyle = "";
+
   const menuItems = [
     { to: "/", label: "Dashboard", icon: Home },
     { to: "/projects", label: "Projects", icon: GrProjects },
     { to: "/tasks", label: "Tasks", icon: FaTasks },
-    { to: "/calender", label: "Calender", icon: SlCalender },
+    { to: "/calendar", label: "Calender", icon: SlCalender },
     { to: "/settings", label: "Settings", icon: LucideSettings },
   ];
-
+  const mobileMenuItems = [
+    { to: "/projects", label: "Projects", icon: GrProjects },
+    { to: "/tasks", label: "Tasks", icon: FaTasks },
+    { to: "/", label: "Dashboard", icon: Home },
+    { to: "/calendar", label: "Calender", icon: SlCalender },
+    { to: "/settings", label: "Settings", icon: LucideSettings },
+  ];
   const renderItems = (collapsed) =>
     menuItems.map(({ to, label, icon: Icon }) => (
-      <Link key={to} to={to} onClick={onCloseMobile}>
+      <NavLink key={to} to={to} onClick={onCloseMobile}>
         <SidebarItem
           icon={
-            <Icon size={!collapsed ? 20 : 30} className="hover:scale-105" />
+            <Icon size={!collapsed ? 20 : 30} className="hover:scale-105 " />
           }
           label={!collapsed ? label : ""}
           tooltip={collapsed ? label : ""}
         />
-      </Link>
+      </NavLink>
     ));
 
   return (
     <>
-      {mobileOpen && (
-        <div
-          className="fixed inset-0 z-40 bg-black/40 md:hidden"
-          onClick={onCloseMobile}
-        />
-      )}
+      {/* Bottom Navigation For small screen  */}
       <div
-        className={`fixed z-50 inset-y-0 left-0 w-72 bg-white dark:bg-[#1c253b] shadow-lg p-3 transform transition-transform duration-300 md:hidden ${
-          mobileOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
+        className=" fixed bottom-0 left-0 right-0 z-50 flex justify-around items-center md:hidden *
+     border-t shadow-lg px-2 py-2 bg-sidebar "
       >
-        <div className="flex items-center justify-between mt-3 mb-8">
-          <img src={logo} alt="logo" className="w-12 h-10" />
-          <button type="button" onClick={onCloseMobile}>
-            <X size={24} className="text-gray-500" />
-          </button>
-        </div>
-        <div className="flex flex-col gap-2 dark:text-gray-500">
-          {renderItems(false)}
-        </div>
+        {mobileMenuItems.map(({ to, icon: Icon, label }) => (
+          <NavLink
+            key={to}
+            to={to}
+            className={`flex flex-col items-center px-3 py-1 rounded-full transition`}
+          >
+            {({ isActive }) => (
+              <>
+                <span
+                  className={`${isActive ? "bg-muted-bg rounded-full" : ""} rounded-full px-2 py-2`}
+                >
+                  <Icon size={15} className="text-text-muted" />
+                </span>
+
+                <span
+                  className={`${isActive ? "text-text-muted" : "text-text-primary"}  text-xs mt-1`}
+                >
+                  {label}
+                </span>
+              </>
+            )}
+          </NavLink>
+        ))}
       </div>
+
       <div
-        className={`hidden h-screen md:block flex-shrink-0  p-2 transition-all duration-300  
-      rounded-xl bg-white dark:bg-[#1c253b] shadow-lg  ${isCollapsed ? "w-20 " : "w-64"} 
-   rounded-tr-3xl rounded-br-3xl text-sm md:text-base
-p-2 md:p-3`}
+        className={`hidden md:flex flex-col h-screen flex-shrink-0   
+                    transition-all duration-300 bg-sidebar
+                     ${isCollapsed ? "w-20" : "w-64"}
+                   rounded-tr-3xl rounded-br-3xl
+                    p-3 md:block sticky top-0 h-screen`}
       >
+        {/* Top Section*/}
         {/* Logo + Sidebar Toggle */}
-        <div className="group relative flex items-center justify-between mt-5 mb-10">
+        <div className="group relative flex items-center justify-between mt-5 mb-10 m-2">
           {/* <SiTask size={30} className="ml-3" /> */}
           <img
             src={logo}
             alt="logo"
-            className={`w-12 h-10 cursor-pointer 
+            className={`w-10 h-10 cursor-pointer 
               ${isCollapsed ? "group-hover:opacity-0" : "group-hover:opacity-100"}`}
             onClick={() => setIsCollapsed((prev) => !prev)}
           />
@@ -83,7 +104,7 @@ p-2 md:p-3`}
               <SidebarOpen
                 onClick={() => setIsCollapsed((prev) => !prev)}
                 className="absolute left-1 
-               cursor-pointer text-gray-500
+               cursor-pointer text-text-light
                opacity-0 group-hover:opacity-100
               hover:shadow-md "
                 size={18}
@@ -91,7 +112,7 @@ p-2 md:p-3`}
               <span
                 className="absolute left-full ml-3 top-1/2 -translate-y-1/2
                whitespace-nowrap rounded-lg px-3 py-1
-               text-lg text-white bg-gray-800 shadow-lg
+               text-lg text-text-strong bg-card shadow-lg
                opacity-0 group-hover:opacity-100
                transition duration-200 pointer-events-none"
               >
@@ -103,14 +124,14 @@ p-2 md:p-3`}
               <SidebarClose
                 onClick={() => setIsCollapsed((prev) => !prev)}
                 className="
-               cursor-pointer text-gray-500
+               cursor-pointer text-text-light
                transition duration-200"
                 size={18}
               />
               <span
                 className="absolute left-full ml-3 top-1/2 -translate-y-1/2
                whitespace-nowrap rounded-lg px-3 py-1
-               text-lg text-white bg-gray-800 shadow-lg
+               text-lg text-text-strong bg-card shadow-lg
                opacity-0 group-hover:opacity-100
                transition duration-200 pointer-events-none"
               >
@@ -120,13 +141,15 @@ p-2 md:p-3`}
           )}
         </div>
 
+        {/* Middle Section*/}
         {/* Sidebar Item */}
         <div className="flex flex-col gap-2 dark:text-gray-500">
           {renderItems(isCollapsed)}
         </div>
 
+        {/* Bottom Section*/}
         <div
-          className="flex flex-row items-center gap-2 fixed left-2 bottom-5 p-4
+          className="mt-auto flex items-center gap-2 p-2
          hover:text-gray-500 hover:bg-white/10 rounded-lg cursor-pointer  hover:shadow-indigo-500/20  hover:scale-105 transition
         "
         >
@@ -146,7 +169,7 @@ p-2 md:p-3`}
                 className="  w-8 h-8 md:w-9 md:h-9 object-cover border border-gray-300 dark:border-gray-600 rounded-full"
               />
               <span className="text-lg font-bold text-gray-700 dark:text-gray-300 ">
-                Pallavi Bhalerao
+                {loggedInUser.userName}
               </span>
             </>
           )}

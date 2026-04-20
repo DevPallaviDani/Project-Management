@@ -4,9 +4,11 @@ import NewProject from "../features/projects/NewProject.jsx";
 import NoProjectSelected from "../features/projects/NoProjectSelected.jsx";
 import ProjectSidebar from "../features/projects/ProjectSidebar.jsx";
 import SelectedProject from "../features/projects/SelectedProject.jsx";
-const ProjectContext = createContext();
+import { loggedInUser } from "../constants/global.js";
 
-export function ProjectProvider({ children }) {
+const WorkspaceContext = createContext({});
+
+export function WorkspaceProvider({ children }) {
   const [showTaskModal, setShowTaskModal] = useState(false);
   const [selectedTaskStatus, setSelectedTaskStatus] = useState("todo");
 
@@ -18,15 +20,15 @@ export function ProjectProvider({ children }) {
     setShowTaskModal(false);
   };
 
-  const [showProjectModal, setShowProjectkModal] = useState(false);
+  const [showProjectModal, setShowProjectModal] = useState(false);
   const [selectedProjectStatus, setSelectedProjectStatus] = useState("started");
 
   const openProjectModal = (selectedProjectStatus) => {
-    setShowProjectkModal(true);
+    setShowProjectModal(true);
     setSelectedProjectStatus(selectedProjectStatus);
   };
   const onCloseProjectModal = () => {
-    setShowProjectkModal(false);
+    setShowProjectModal(false);
   };
 
   const [projectsState, setProjectsState] = useState(() => {
@@ -38,15 +40,14 @@ export function ProjectProvider({ children }) {
           selectedProjectId: undefined,
           projects: [],
           tasks: [],
+          activityLog: [],
         };
   });
   useEffect(() => {
     localStorage.setItem("projectState", JSON.stringify(projectsState));
   }, [projectsState]);
 
-  {
-    /* PROJECT HANDLERS */
-  }
+  // ================= PROJECT =================
 
   function handleDeleteProject(projectId) {
     setProjectsState((prevState) => {
@@ -90,32 +91,43 @@ export function ProjectProvider({ children }) {
       const newProject = {
         ...projectData,
         id: uuidv4(),
+        createdAt: new Date(),
+      };
+
+      const newActivity = {
+        id: Date.now(),
+        message: `Project "${newProject.title}" created.`,
+        timestamp: new Date(),
+        projectId: newProject.id,
+        type: "PROJECT_CREATED",
       };
       return {
         ...prevState,
         selectedProjectId: undefined,
         projects: [...prevState.projects, newProject],
+
+        activityLog: [...(prevState.activityLog || []), newActivity],
       };
     });
   }
 
-  {
-    /*HANDLE TASK*/
-  }
-  {
-    /*TOTAL STATS*/
+  //  HANDLE MOVE PROJECTS
+
+  function handleMoveProjects(projectId, newStatus) {
+    setProjectsState((prevState) => {
+      const updatedprojects = prevState.projects.map((project) =>
+        project.id === projectId
+          ? { ...project, projectStatus: newStatus }
+          : project,
+      );
+      return {
+        ...prevState,
+        projects: updatedprojects,
+      };
+    });
   }
 
-  //   STATS (GLOBAL)
-  const totalProjects = projectsState.projects.length;
-  const totalTasks = projectsState.tasks.length;
-  const completedTasks = projectsState.tasks.filter(
-    (task) => task.status === "done",
-  ).length;
-
-  const selectedProject = projectsState.projects.find(
-    (project) => project.id === projectsState.selectedProjectId,
-  );
+  // ================= TASK =================
 
   function handleAddTask(taskData) {
     setProjectsState((prevState) => {
@@ -125,19 +137,31 @@ export function ProjectProvider({ children }) {
         (project) => project.id === taskData.projectId,
       );
       const newTask = {
-        text: taskData.text,
-        taskDescription: taskData.taskDescription,
+        id: taskId,
+        text: taskData.title,
+        taskDescription: taskData.description,
         projectId: taskData.projectId,
         taskProject: taskProject,
         dueDate: taskData.dueDate,
-        id: taskId,
         status: selectedTaskStatus ? selectedTaskStatus : "todo",
-        priority: taskData.priority || "medium",
+        priority: taskData.priority,
+        createdAt: new Date(),
+        assigneeId: taskData.assigneeId,
+        tagId: taskData.tagId,
       };
 
+      const newActivity = {
+        id: Date.now(),
+        message: `Task "${newTask.text}" created.`,
+        timestamp: new Date(),
+        taskId: newTask.id,
+        type: "TASK_CREATED",
+      };
       return {
         ...prevState,
         tasks: [newTask, ...prevState.tasks],
+
+        activityLog: [...(prevState.activityLog || []), newActivity],
       };
     });
   }
@@ -164,29 +188,12 @@ export function ProjectProvider({ children }) {
       };
     });
   }
-
-  {
-    /*  HANDLE MOVE PROJECTS */
-  }
-  function handleMoveProjects(projectId, newStatus) {
-    setProjectsState((prevState) => {
-      const updatedprojects = prevState.projects.map((project) =>
-        project.id === projectId
-          ? { ...project, projectStatus: newStatus }
-          : project,
-      );
-      return {
-        ...prevState,
-        projects: updatedprojects,
-      };
-    });
-  }
-
+  // ================= DERIVED =================
   {
     /* PROJECT CONTENTS */
   }
   // SELECTED PROJECT
-  const { projects, tasks, selectedProjectId } = projectsState;
+  const { projects, tasks, activityLog, selectedProjectId } = projectsState;
 
   let content = <NoProjectSelected onStartAddProject={handleStartAddProject} />;
 
@@ -213,7 +220,18 @@ export function ProjectProvider({ children }) {
       />
     );
   }
+  //   STATS (GLOBAL)
+  const totalProjects = projectsState.projects.length;
+  const totalTasks = projectsState.tasks.length;
+  const completedTasks = projectsState.tasks.filter(
+    (task) => task.status === "done",
+  ).length;
 
+  
+
+  const selectedProject = projectsState.projects.find(
+    (project) => project.id === projectsState.selectedProjectId,
+  );
   // TASKS OF SELECTED PROJECT
   const filteredTasks = tasks.filter(
     (task) => task.projectId === selectedProjectId,
@@ -223,6 +241,7 @@ export function ProjectProvider({ children }) {
   const todoTasks = tasks.filter((task) => task.status === "todo");
   const progressTasks = tasks.filter((task) => task.status === "progress");
   const doneTasks = tasks.filter((task) => task.status === "done");
+
   //   STATS (Selected Project)
   const projectStats = {
     total: filteredTasks.length,
@@ -237,15 +256,18 @@ export function ProjectProvider({ children }) {
       selectedProjectId: undefined,
       projects: [],
       tasks: [],
+      activityLog: [],
     });
   }
+  // console.log("CTX:", useContext(WorkspaceContext));
 
   return (
-    <ProjectContext.Provider
+    <WorkspaceContext.Provider
       value={{
         // raw
         projects,
         tasks,
+        activityLog,
         selectedProjectId,
 
         // derived
@@ -254,14 +276,14 @@ export function ProjectProvider({ children }) {
         filteredTasks,
         totalProjects,
         totalTasks,
-        completedTasks,
+        completedTasks,        
         todoTasks,
         doneTasks,
         progressTasks,
         content,
         projectStats,
         showTaskModal,
-        selectedTaskStatus,       
+        selectedTaskStatus,
         showProjectModal,
         selectedProjectStatus,
 
@@ -282,15 +304,15 @@ export function ProjectProvider({ children }) {
 
         openProjectModal,
         onCloseProjectModal,
-        setShowProjectkModal,
+        setShowProjectModal,
 
         handleResetStorage,
       }}
     >
       {children}
-    </ProjectContext.Provider>
+    </WorkspaceContext.Provider>
   );
 }
-export function useProjectContext() {
-  return useContext(ProjectContext);
+export function useWorkspaceContext() {
+  return useContext(WorkspaceContext);
 }

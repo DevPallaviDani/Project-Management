@@ -10,6 +10,8 @@ function ItemCard({
   projectStatus,
   children,
   priority,
+  assignee,
+  tag,
 }) {
   // ✅ Line-through logic
   const isTaskDone = taskStatus === "done";
@@ -22,14 +24,14 @@ function ItemCard({
   function getPriorityColor(priority) {
     switch (priority) {
       case "high":
-        return "bg-red-200 text-white";
+        return "bg-red-200 ";
       case "medium":
-        return "bg-yellow-200 text-black";
+        return "bg-[#f5fa95] ";
       case "low":
-        return "bg-green-200 text-white";
+        return "bg-[#8cc9a8] ";
 
       default:
-        return "bg-gray-300";
+        return "bg-card";
     }
   }
 
@@ -42,38 +44,78 @@ function ItemCard({
   return (
     <>
       <div
-        className={`bg-white p-1 pt-3 shadow-md
-      hover:shadow-lg hover:scale-105 duration-300 transition-all
+        className={` p-1 pt-3 shadow-md 
+          hover:shadow-lg hover:scale-105  duration-300 transition-all
       cursor-grab active:cursor-grabbing
-      text-xs rounded-2xl ${getPriorityColor(priority)}
-      ${textStyle}
+      text-xs rounded-2xl  ${getPriorityColor(priority)}
+     
       ${isOverdue() ? "border-2 border-red-500" : ""}
       `}
       >
         {/* Priority Badge (only if exists) */}
-        {priority && (
-          <span className={`text-xs rounded ${getPriorityColor(priority)}`}>
+        {/* {priority && (
+          <span className={`text-xs m-2 uppercase rounded text-text-muted ${getPriorityColor(priority)}`}>
             {priority}
           </span>
-        )}
-        <div className="bg-white rounded-xl px-2 py-1">
-          {/* Title */}
-          <h3 className="font-semibold text-xl">{title}</h3>
-        {subtitle &&   <p className="text-sm text-gray-500">{subtitle}</p>}
-          {/* Description */}
-          <p className="text-sm text-gray-500">{description}</p>
-
-          {/* Bottom Row */}
-          <div className="flex justify-between items-center mt-2">
-            {/* Due Date */}
-            <span className="text-xs text-gray-400">{dueDate}</span>
-
-            {/* Status */}
-            {(taskStatus || projectStatus) && (
-              <span className="text-xs text-gray-400">
-                {taskStatus || projectStatus}
+        )} */}
+        <div className=" group relative rounded-xl  bg-card ml-2">
+          <div className="border-b pb-5">
+            {/* Title */}
+            <span
+              className={`text-2xl font-bold text-text-heading ${textStyle} mt-2`}
+            >
+              {title}
+            </span>
+            {tag && (
+              <span
+                className={` inline-block px-2 py-1 ml-2 text-sm text-gray-600 ${tag.color} ${textStyle} rounded-full`}
+              >
+                {tag.label}
               </span>
             )}
+            {subtitle && (
+              <p className="text-lg text-text-secondary">{subtitle}</p>
+            )}
+            {/* Description */}
+            <p className="text-sm text-text-muted">{description}</p>
+          </div>
+
+          {/* Bottom Row */}
+          <div className="flex justify-between items-center mt-4 ">
+            <div className="flex justify-center gap-2">
+              {priority && (
+                <span
+                  className={`inline-block px-2 py-1 text-sm  text-gray-600   ${priority.color} ${textStyle} rounded-full`}
+                >
+                  {priority.label}
+                </span>
+              )}
+              <span className="text-xs text-text-muted  p-2 rounded-2xl bg-bg">
+                {dueDate}
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              {/* Due Date */}
+              {assignee && (
+                <div className="flex  items-center gap-2">
+                  <img
+                    src={assignee?.avatar}
+                    //  "/src/assets/images/profileavatar.png"
+                    className="rounded-full w-8 h-8"
+                  />
+                  {/* <span className="text-lg text-text-secondary">
+                {assignee?.name}
+              </span> */}
+                </div>
+              )}
+
+              {/* Status */}
+              {/* {(taskStatus || projectStatus) && (
+                <span className="text-xs text-text-muted">
+                  {taskStatus || projectStatus}
+                </span>
+              )} */}
+            </div>
           </div>
           {/* Overdue */}
           {isOverdue() && (

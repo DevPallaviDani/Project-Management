@@ -1,6 +1,6 @@
 import React from "react";
 import Tasks from "../tasks/TaskList.jsx";
-import useProjects from "../../hooks/useProjects.jsx";
+import useProjects from "../../hooks/useWorkspace.jsx";
 
 function SelectedProject(
   {
@@ -50,12 +50,12 @@ function SelectedProject(
       </header>
       {/* { console.log((tasks).filter(pro=>pro.projectId === project.id))} */}
 
-      <Tasks
+      {/* <Tasks
         onAddTask={onAddTask}
         tasks={tasks.filter((pro) => pro.projectId === project.id)}
         onDeleteTask={onDeleteTask}
         onMoveTask={onMoveTask}
-      />
+      /> */}
     </div>
   );
 }

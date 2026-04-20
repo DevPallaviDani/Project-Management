@@ -1,15 +1,15 @@
 import React from "react";
-import useProjects from "../hooks/useProjects.jsx";
+import useWorkspace from "../hooks/useWorkspace.jsx";
 import ProjectSidebar from "../features/projects/ProjectSidebar.jsx";
 import ProjectList from "../features/projects/ProjectList.jsx";
 
 function Projects() {
   const { projectsState, handleDeleteProject, handleMoveProjects } =
-    useProjects();
+    useWorkspace();
 
   return (
     <>
-      <div className="grid overflow-auto gap-3 bg-white rounded-2xl p-5">
+      <div className="grid overflow-auto gap-3   rounded-2xl p-5 muted-bg md:px-2 md:py-1  px-3 py-1  mt-20 md:mt-2">
         <h1 className="text-xl sm:text-2xl font-semibold">Projects</h1>
         {/* <div >
  <ul className="mt-5">

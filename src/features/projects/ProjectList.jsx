@@ -1,5 +1,5 @@
 import React, { use } from "react";
-import useProjects from "../../hooks/useProjects.jsx";
+import useWorkspace from "../../hooks/useWorkspace.jsx";
 import SectionWrapper from "../../components/common/SectionWrapper.jsx";
 import ItemCard from "../../components/common/ItemCard.jsx";
 function ProjectList({ handleDeleteProject, handleMoveProjects }) {
@@ -9,8 +9,8 @@ function ProjectList({ handleDeleteProject, handleMoveProjects }) {
     openProjectModal,
     // handleDeleteProject,
     // handleMoveProjects,
-  } = useProjects();
-  console.log("Tasks:", tasks);
+  } = useWorkspace();
+ 
 
   const startedProjects = projects.filter(
     (p) => p.projectStatus === "started",
@@ -21,9 +21,7 @@ function ProjectList({ handleDeleteProject, handleMoveProjects }) {
   const completedProjects = projects.filter(
     (p) => p.projectStatus === "completed",
   ).length;
-  console.log(
-    `startedProjects: ${startedProjects}, onGoingProjects: ${onGoingProjects}, completedProjects : ${completedProjects} `,
-  );
+ 
   const handleAddClick = (status) => {
     openProjectModal(status);
   };
@@ -38,27 +36,24 @@ function ProjectList({ handleDeleteProject, handleMoveProjects }) {
                 count={startedProjects}
                 onAdd={() => handleAddClick("started")}
               >
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-1 gap-3">
                   {projects
-                    // .slice(0, 8)
+                    .slice(0, 8)
                     .filter((project) => project.projectStatus === "started")
                     .map((project) => {
                       const projectTasks = tasks.filter(
                         (t) => t.projectId === project.id,
                       );
-                      {
-                        console.log(project);
-                      }
+                     
                       return (
                         <div key={project.id} className="flex flex-col gap-2">
                           <ItemCard
                             key={project.id}
                             title={project.title}
-                            description={
-                              projectTasks.length
+                            subtitle={projectTasks.length
                                 ? `${projectTasks.length} tasks`
-                                : "NO TASK"
-                            }
+                                : "NO TASK"}
+                            description={project.description}
                             dueDate={project.dueDate}
                             projectStatus={project.projectStatus}
                           />
@@ -91,7 +86,7 @@ function ProjectList({ handleDeleteProject, handleMoveProjects }) {
                 count={onGoingProjects}
                 onAdd={() => handleAddClick("ongoing")}
               >
-                <div className="grid grid-cols-2 sm:grid-cols-2 gap-3">
+                <div className="grid grid-cols-2 sm:grid-cols-1 gap-3">
                   {projects
                     // .slice(0, 8)
                     .filter((project) => project.projectStatus === "ongoing")
@@ -99,9 +94,7 @@ function ProjectList({ handleDeleteProject, handleMoveProjects }) {
                       const projectTasks = tasks.filter(
                         (t) => t.projectId === project.id,
                       );
-                      {
-                        console.log(project);
-                      }
+                      
                       return (
                         <div key={project.id} className="flex flex-col gap-2">
                           <ItemCard
@@ -145,7 +138,7 @@ function ProjectList({ handleDeleteProject, handleMoveProjects }) {
                 count={completedProjects}
                 onAdd={() => handleAddClick("completed")}
               >
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-1 gap-3">
                   {projects
                     // .slice(0, 8)
                     .filter((project) => project.projectStatus === "completed")

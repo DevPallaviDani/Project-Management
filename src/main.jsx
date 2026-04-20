@@ -2,12 +2,14 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App.jsx";
 import "./index.css";
-import { ProjectProvider } from "./contexts/ProjectContext.jsx";
+import "./styles/theme.css";
+import { WorkspaceProvider } from "./contexts/WorkspaceContext.jsx";
+
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <ProjectProvider>
+    <WorkspaceProvider>
       <App />
-    </ProjectProvider>
+    </WorkspaceProvider>
   </React.StrictMode>,
 );

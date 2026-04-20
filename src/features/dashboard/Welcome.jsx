@@ -6,7 +6,7 @@ function Welcome({ userName }) {
       className="flex flex-col dark:text-gray-200"
       // className="min-h-screen flex items-center gap-4"
     >
-      <span className="text-3xl font-bold font-serif text-gray-600  dark:text-gray-200 m-2">
+      <span className="text-xl md:text-3xl font-bold font-serif text-gray-600  dark:text-gray-200 m-2">
         Welcome to KaryaHub
       </span>
       <p className="ml-3 font-mono  text-gray-600 whitespace-pre-wrap  dark:text-gray-200">
