@@ -22,7 +22,7 @@ function SectionWrapper({
           <div className="flex items-center gap-1">
             {Icon && <Icon size={18} className={color} />}
 
-            <span className="text-lg font-semibold p-1 text-text-strong ">
+            <span className="text-lg font-semibold p-1 text-text-primary">
               {title}
             </span>
 

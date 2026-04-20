@@ -25,37 +25,53 @@ function CalendarPage() {
     currentDate.getMonth() + 1,
     0,
   );
+const year = currentDate.getFullYear();
+    const month = currentDate.getMonth();
+
+    const startDay = startOfMonth.getDay();
+    const totalDays = EndOfMonth.getDate();
+
+
 
   // Generate days array
   const generateDays = () => {
     const days = [];
-    const startDay = startOfMonth.getDay();
 
-    // previous month padding
-    for (let i = 0; i < startDay; i++) {
-      days.push(null);
+    
+    // previous month days
+    const prevMonthLastDate = new Date(year, month, 0).getDate();
+
+    for (let i = startDay - 1; i >= 0; i--) {
+      days.push(new Date(year, month - 1, prevMonthLastDate - i));
     }
-    // // next month padding
-    //     for (let i = 0; i < endDay; i++) {
-    //       days.push(null);
-    //     }
-
-    for (let i = 1; i <= EndOfMonth.getDate(); i++) {
-      days.push(new Date(currentDate.getFullYear(), currentDate.getMonth(), i));
+   
+    // Current month days
+    for (let i = 1; i <= totalDays; i++) {
+      days.push(new Date(year, month, i));
     }
+    // Next month Days
+    const remaining = 42 - days.length;
 
+    for (let i = 1; i <= remaining; i++) {
+      days.push(new Date(year, month + 1, i));
+    }
     return days;
   };
 
   const days = generateDays();
 
   const tasksForDay = (date) => {
-    if (!date) return [];
+    if (!isCurrentMonth(date)) return [];
 
     return tasks.filter(
       (task) => isSameDay(task.dueDate, date) && task.status !== "done",
     );
   };
+
+  //  detect Current Month
+  const isCurrentMonth =(date)=>{
+    return date.getMonth() === currentDate.getMonth();
+  }
 
   // Change Month
   function changeMonth(offset) {
@@ -114,20 +130,28 @@ function CalendarPage() {
         </div>
 
         {/* Calendar Grid  */}
-        <div className="grid grid-cols-7 gap-2">
+        <div className="grid grid-cols-7 gap-1 ">
           {days.map((date, index) => {
             const dayTasks = tasksForDay(date);
             const isToday = date && isSameDay(date, new Date());
             return (
               <div
                 key={index}
-                className={`relative min-h-[80px]  pt-6 pl-1 rounded-lg border bg-card  ${isToday ? "border-blue-300" : ""}`}
+                className={`relative min-h-[70px] pt-6 pl-1 rounded-lg
+                  border border-slate-500 bg-card  ${isToday ? "border-blue-300" : ""}`}
               >
                 {/* Date  */}
                 <div>
+                 
                   {date && (
                     <span
-                      className={`absolute top-1 right-2 px-1 text-lg font-semibold mb-1  ${isToday ? "rounded-full bg-pink-200" : ""} `}
+                      className={`absolute top-1 right-2 px-1
+                         text-lg font-semibold mb-1 
+                          ${isToday ? "rounded-full bg-pink-200" : ""} 
+                        ${ 
+                          !isCurrentMonth(date) ? "text-gray-400 dark:text-gray-600":"text-gray-900 dark:text-gray-100"
+                        }
+                          `}
                     >
                       {date.getDate() === startOfMonth.getDate()
                         ? date.toLocaleString("default", {
@@ -143,8 +167,7 @@ function CalendarPage() {
                   {dayTasks.slice(0, 2).map((task) => {
                     const priority = getTaskPriorities(task.priority);
                     const taskStatus = getStatusByTask(task);
-                    console.log(taskStatus);
-
+                  
                     return (
                       <div
                         key={task.id}
