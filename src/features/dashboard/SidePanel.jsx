@@ -85,7 +85,7 @@ function SidePanel({ tasks, onDateSelect }) {
             ) : (
               deadlines &&
               deadlines.map((item, index) => {
-                const updl = upcomingDeadLines.find(
+                const updl = upcomingDeadLines?.find(
                   (udl) => udl.id === item.id && udl.label === item.section,
                 );
                 
