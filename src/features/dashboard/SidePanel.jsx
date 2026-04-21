@@ -85,13 +85,13 @@ function SidePanel({ tasks, onDateSelect }) {
             ) : (
               deadlines &&
               deadlines.map((item, index) => {
-                const updl = (upcomingDeadLines && upcomingDeadLines.find(
-                  (udl) => udl.id === item.id && udl.label === item.section,
+                const updl = (upcomingDeadLines?.find(
+                  (udl) => udl.id=== item.id && udl.label === item.section,
                 ))
                 
                 return (
                   <div key={index} className="">
-                    <span className={`text-xs  ${updl.text}  p-1 rounded-md`}>
+                    <span className={`text-xs  ${updl?.text || "text-gray-400"}  p-1 rounded-md`}>
                       {item.date ? item.date : ""}{" "}
                      
                     </span>{" "}
