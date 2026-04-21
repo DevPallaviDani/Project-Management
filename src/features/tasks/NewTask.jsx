@@ -121,7 +121,7 @@ function NewTask({ onAddTask, onClose }) {
               }
               className="w-full p-2 border rounded mb-4 dark:text-gray-500"
             >
-              <option value="">Priority</option>
+              <option value="">Select Priority</option>
               {TASK_PRIORITIES.map((tpriority) => (
                 <option key={tpriority.id} value={tpriority.value}>
                   {tpriority.label}

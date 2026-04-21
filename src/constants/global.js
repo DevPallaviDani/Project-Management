@@ -27,6 +27,8 @@ export const TAGS = [
   { id: "tag_5", label: "Automation", color: "bg-gray-100" },
   { id: "tag_6", label: "DevOps", color: "bg-pink-200" },
   { id: "tag_7", label: "Testing", color: "bg-white-200" },
+  { id: "tag_8", label: "UI/UX", color: "bg-slate-200" },
+  { id: "tag_9", label: "Frontend", color: "bg-lime-200" },
 ];
 
 export const loggedInUser = 

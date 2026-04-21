@@ -45,7 +45,7 @@ function QuickButton({ label, onClick }) {
 function SidePanel({ tasks, onDateSelect }) {
   const { deadlines, activities, upcomingDeadLines } = useInsights();
 
-  // console.log("upcomingDeadLines", upcomingDeadLines);
+
 
   function formatTime(timestamp) {
     const now = new Date();
@@ -58,6 +58,9 @@ function SidePanel({ tasks, onDateSelect }) {
 
     const hours = Math.floor(diff / 60);
     if (hours < 24) return `${hours}hrs ago`;
+ 
+   //const yesterday = Math.floor(diff/60);
+   if(24 < hours > 48) return`yesterday`
 
     const days = Math.floor(hours / 24);
     if (days < 30) return `${days}d ago`;
@@ -81,27 +84,25 @@ function SidePanel({ tasks, onDateSelect }) {
               <p className="text-sm text-gray-400">No upcoming tasks</p>
             ) : (
               deadlines &&
-              deadlines.map((item, index) => (
-                <div key={index} className="">
-                  <span
-                    className={`text-xs ${
-                      item.date === "Today"
-                        ? "text-red-500"
-                        : item.date === "Tomorrow"
-                          ? "text-yellow-500"
-                          : "text-gray-400"
-                    }`}
-                    // "text-sm font-semibold mb-3 text-gray-600 dark:text-gray-300"
-                  >
-                    {item.date ? item.date : ""}
-                  </span>{" "}
-                  {"-"}
-                  <span className="text-sm  mb-3 text-gray-600 dark:text-gray-300">
-                    {item.title ? item.title : ""}
-                  </span>
-                  {/* <span className="text-xs text-gray-400">{item.project}</span> */}
-                </div>
-              ))
+              deadlines.map((item, index) => {
+                const updl = upcomingDeadLines.find(
+                  (udl) => udl.id === item.id && udl.label === item.section,
+                );
+                
+                return (
+                  <div key={index} className="">
+                    <span className={`text-xs  ${updl.text}  p-1 rounded-md`}>
+                      {item.date ? item.date : ""}{" "}
+                     
+                    </span>{" "}
+                    {"- "}
+                    <span className="text-sm  mb-3 text-gray-600 dark:text-gray-300">
+                      {item.title ? item.title : ""}
+                    </span>
+                    {/* <span className="text-xs text-gray-400">{item.project}</span> */}
+                  </div>
+                );
+              })
             )}
           </div>
         </div>

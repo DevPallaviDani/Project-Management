@@ -47,6 +47,11 @@ export function WorkspaceProvider({ children }) {
     localStorage.setItem("projectState", JSON.stringify(projectsState));
   }, [projectsState]);
 
+   
+
+
+
+
   // ================= PROJECT =================
 
   function handleDeleteProject(projectId) {
@@ -96,7 +101,7 @@ export function WorkspaceProvider({ children }) {
 
       const newActivity = {
         id: Date.now(),
-        message: `Project "${newProject.title}" created.`,
+        message: `New Project "${newProject.title}" created.`,
         timestamp: new Date(),
         projectId: newProject.id,
         type: "PROJECT_CREATED",
@@ -105,7 +110,6 @@ export function WorkspaceProvider({ children }) {
         ...prevState,
         selectedProjectId: undefined,
         projects: [...prevState.projects, newProject],
-
         activityLog: [...(prevState.activityLog || []), newActivity],
       };
     });
@@ -152,7 +156,7 @@ export function WorkspaceProvider({ children }) {
 
       const newActivity = {
         id: Date.now(),
-        message: `Task "${newTask.text}" created.`,
+        message: `New Task "${newTask.text}" added to ${newTask.taskProject.title}`,
         timestamp: new Date(),
         taskId: newTask.id,
         type: "TASK_CREATED",
@@ -160,7 +164,6 @@ export function WorkspaceProvider({ children }) {
       return {
         ...prevState,
         tasks: [newTask, ...prevState.tasks],
-
         activityLog: [...(prevState.activityLog || []), newActivity],
       };
     });

@@ -6,16 +6,7 @@ export default function useInsights() {
 
   // DeadLines
 
-  const getUpComingTasks = (tasks, days = 15) => {
-    // const nowDate = new Date();
-
-    // const futureLimit = new Date();
-    // futureLimit.setDate(nowDate.getDate() + days);
-
-    // const result= tasks.filter((task) => {
-    //   const due = new Date(task.dueDate);
-    //   return due >= nowDate && due <= futureLimit;
-    // });
+  const getUpComingTasks = (tasks, days = 15) => {  
 
     const now = new Date();
 
@@ -87,6 +78,8 @@ const overDueTasks =upcomingTasks.overdue;
       date: formatDate(task.dueDate),
       section: section.label,
       color: section.color,
+      text:section.text,
+      bgColor:section.bg,
     })),
   )
   
@@ -101,6 +94,7 @@ const overDueTasks =upcomingTasks.overdue;
       title: t.text,
       project: t.taskProject?.title || "No Project",
       date: formatDate(t.dueDate),
+      
     }));
 
   

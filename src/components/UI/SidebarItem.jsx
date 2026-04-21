@@ -11,9 +11,9 @@ function SidebarItem({ icon, label, tooltip }) {
       </span>
       {tooltip && (
         <span
-          className="absolute left-full ml-3 top-1/2 -translate-y-1/2
+          className="absolute  ml-1 top-1/2 
                      whitespace-nowrap rounded px-2 py-1 shadow-lg
-                     text-lg text-text-light bg-card
+                     text-sm text-text-light bg-card
                      opacity-0 group-hover:opacity-100 
                      transition pointer-events-none z-50"
         >
