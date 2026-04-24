@@ -12,13 +12,13 @@ function ProjectList({ handleDeleteProject, handleMoveProjects }) {
   } = useWorkspace();
  
 
-  const startedProjects = projects.filter(
+  const startedProjects = projects?.filter(
     (p) => p.projectStatus === "started",
   ).length;
-  const onGoingProjects = projects.filter(
+  const onGoingProjects = projects?.filter(
     (p) => p.projectStatus === "ongoing",
   ).length;
-  const completedProjects = projects.filter(
+  const completedProjects = projects?.filter(
     (p) => p.projectStatus === "completed",
   ).length;
  
@@ -37,8 +37,7 @@ function ProjectList({ handleDeleteProject, handleMoveProjects }) {
                 onAdd={() => handleAddClick("started")}
               >
                 <div className="grid grid-cols-1 sm:grid-cols-1 gap-3">
-                  {projects
-                    .slice(0, 8)
+                  {projects?.slice(0, 8)
                     .filter((project) => project.projectStatus === "started")
                     .map((project) => {
                       const projectTasks = tasks.filter(
@@ -87,9 +86,8 @@ function ProjectList({ handleDeleteProject, handleMoveProjects }) {
                 onAdd={() => handleAddClick("ongoing")}
               >
                 <div className="grid grid-cols-2 sm:grid-cols-1 gap-3">
-                  {projects
-                    // .slice(0, 8)
-                    .filter((project) => project.projectStatus === "ongoing")
+                  {projects?.filter((project) => project.projectStatus === "ongoing")
+                    // .slice(0, 8)                   
                     .map((project) => {
                       const projectTasks = tasks.filter(
                         (t) => t.projectId === project.id,
@@ -139,9 +137,8 @@ function ProjectList({ handleDeleteProject, handleMoveProjects }) {
                 onAdd={() => handleAddClick("completed")}
               >
                 <div className="grid grid-cols-1 sm:grid-cols-1 gap-3">
-                  {projects
-                    // .slice(0, 8)
-                    .filter((project) => project.projectStatus === "completed")
+                  {projects?.filter((project) => project.projectStatus === "completed")
+                    // .slice(0, 8)                   
                     .map((project) => {
                       const projectTasks = tasks.filter(
                         (t) => t.projectId === project.id,

@@ -15,7 +15,7 @@ function StatsGrid() {
   const overDueTasksOfUsers = overDueTasks.tasks.filter(
     (task) => task.assigneeId === loggedInUser.userId,
   ).length;
-  console.log(tasks);
+ 
 
   const totalAssignedTasks = tasks.filter(
     (t) => t.assigneeId === loggedInUser.userId && t.status !== "done",
@@ -24,8 +24,6 @@ function StatsGrid() {
     (task) => task.status !== "done",
   ).length;
 
-  console.log("totalAssignedTasks ", totalAssignedTasks);
-  console.log("activeAssignedTasks ", activeAssignedTasks);
 
   return (
     <div

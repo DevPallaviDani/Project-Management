@@ -31,7 +31,7 @@ function Dashboard() {
   const [hasTask, setHastask] = useState(false);
 
   const handleDateFilter = (selectedDate) => {
-    const filtered = tasks.filter(
+    const filtered = tasks?.filter(
       (task) => isSameDay(task.dueDate, selectedDate) && task.status !== "done",
     );
     if (filtered.length > 0) {
@@ -102,7 +102,7 @@ function Dashboard() {
                       </Button>
                     </div>
                   )}
-                  {(filteredTask || [])
+                  {( filteredTask || assignedTasks)
                     //  assignedTasks
                     .slice(0, 4)
                     .map((task) => {   

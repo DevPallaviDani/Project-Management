@@ -65,7 +65,7 @@ export default function useInsights() {
   };
 
   const upcomingTasks = getUpComingTasks(tasks);
-// console.log(upcomingTasks.overdue);
+
 
 const overDueTasks =upcomingTasks.overdue;
 

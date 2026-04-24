@@ -69,17 +69,17 @@ function TaskList({ tasks, onMoveTask }) {
     return projects.find((p) => p.id === task.projectId);
   };
 
-  const todoTasks = tasks.filter((task) => task.status === "todo").length;
-  const progressTasks = tasks.filter(
+  const todoTasks = tasks?.filter((task) => task.status === "todo").length;
+  const progressTasks = tasks?.filter(
     (task) => task.status === "progress",
   ).length;
-  const doneTasks = tasks.filter((task) => task.status === "done").length;
-  console.log(tasks);
+  const doneTasks = tasks?.filter((task) => task.status === "done").length;
+
 
   return (
     <div className="flex-1">
       <div className="grid grid-cols-1 md:grid-cols-3 ">
-        {tasks.length > 0 && (
+        {tasks?.length > 0 && (
           <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
             <DroppableColumn id="todo" className="h-full overflow-x-auto  ">
               <SectionWrapper
@@ -90,13 +90,13 @@ function TaskList({ tasks, onMoveTask }) {
                 Icon={FaRegCircle}
               >
                 {tasks
-                  .filter((task) => task.status === "todo")
+                  ?.filter((task) => task.status === "todo")
                   .map((task) => {
                     const project = getProjectByTask(task);
                     const assignee = getAssignee(task.assigneeId);
                     const tag = TAGS.find((t) => t.id === task?.tagId);
                     const priority = getTaskPriorities(task.priority);
-                    console.log(priority);
+              
 
                     return (
                       <DraggableCard
@@ -206,7 +206,7 @@ function TaskList({ tasks, onMoveTask }) {
                     const assignee = getAssignee(task.assigneeId);
                     const tag = TAGS.find((t) => t.id === task?.tagId);
                     const priority = getTaskPriorities(task.priority);
-                    console.log(assignee);
+               
 
                     return (
                       <DraggableCard

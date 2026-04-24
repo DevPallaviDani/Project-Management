@@ -45,8 +45,6 @@ function QuickButton({ label, onClick }) {
 function SidePanel({ tasks, onDateSelect }) {
   const { deadlines, activities, upcomingDeadLines } = useInsights();
 
-
-
   function formatTime(timestamp) {
     const now = new Date();
     const time = new Date(timestamp);
@@ -55,15 +53,18 @@ function SidePanel({ tasks, onDateSelect }) {
 
     if (diff < 1) return "Just Now";
     if (diff < 60) return `${diff} min ago`;
+    console.log("diff ", diff);
 
     const hours = Math.floor(diff / 60);
     if (hours < 24) return `${hours}hrs ago`;
- 
-   //const yesterday = Math.floor(diff/60);
-   if(24 < hours > 48) return`yesterday`
-
-    const days = Math.floor(hours / 24);
-    if (days < 30) return `${days}d ago`;
+   
+    if (48 > hours && hours > 24) {
+      return `yesterday`;
+    }
+    if (hours >= 48) {
+      const days = Math.floor(hours / 24);   
+      if (days < 30) return `${days}d ago`;
+    }
   }
 
   return (
@@ -85,15 +86,16 @@ function SidePanel({ tasks, onDateSelect }) {
             ) : (
               deadlines &&
               deadlines.map((item, index) => {
-                const updl = (upcomingDeadLines?.find(
-                  (udl) => udl.id=== item.id && udl.label === item.section,
-                ))
-                
+                const updl = upcomingDeadLines?.find(
+                  (udl) => udl.id === item.id && udl.label === item.section,
+                );
+
                 return (
                   <div key={index} className="">
-                    <span className={`text-xs  ${updl?.text || "text-gray-400"}  p-1 rounded-md`}>
+                    <span
+                      className={`text-xs  ${updl?.text || "text-gray-400"}  p-1 rounded-md`}
+                    >
                       {item.date ? item.date : ""}{" "}
-                     
                     </span>{" "}
                     {"- "}
                     <span className="text-sm  mb-3 text-gray-600 dark:text-gray-300">
