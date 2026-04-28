@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import NewTask from "./NewTask.jsx";
+import React, { use, useState } from "react";
+import TaskModal from "./TaskModal.jsx";
 import SectionWrapper from "../../components/common/SectionWrapper.jsx";
 import ItemCard from "../../components/common/ItemCard.jsx";
 import { DndContext, DragOverlay } from "@dnd-kit/core";
@@ -14,6 +14,8 @@ import { TAGS, TASK_PRIORITIES } from "../../constants/global.js";
 import { TbProgress } from "react-icons/tb";
 import { IoCheckmarkDoneCircle } from "react-icons/io5";
 import { FaRegCircle } from "react-icons/fa";
+import { CiEdit } from "react-icons/ci";
+import { MdDeleteForever } from "react-icons/md";
 import {
   isSameDay,
   getAssignee,
@@ -21,14 +23,19 @@ import {
   getTaskPriorities,
 } from "../../utils/helper.js";
 
-function TaskList({ tasks, onMoveTask }) {
+function TaskList({ tasks, onMoveTask, onDeleteTask }) {
   // const { openTaskModal } = useTask();
-  const { projects, openTaskModal } = useWorkspace();
+  const { projects, openEditTaskModal, openAddTaskModal } = useWorkspace();
   const { deadlines } = useInsights();
   const [activeTask, setActiveTask] = useState(null);
 
   const handleAddClick = (selectedstatus) => {
-    openTaskModal(selectedstatus);
+    openAddTaskModal(selectedstatus);
+  };
+
+  const handleEditTask = (id) => {
+    const task = tasks.find((t) => t.id === id);
+    openEditTaskModal(task, "edit");
   };
 
   function handleDragStart(event) {
@@ -75,7 +82,6 @@ function TaskList({ tasks, onMoveTask }) {
   ).length;
   const doneTasks = tasks?.filter((task) => task.status === "done").length;
 
-
   return (
     <div className="flex-1">
       <div className="grid grid-cols-1 md:grid-cols-3 ">
@@ -96,7 +102,7 @@ function TaskList({ tasks, onMoveTask }) {
                     const assignee = getAssignee(task.assigneeId);
                     const tag = TAGS.find((t) => t.id === task?.tagId);
                     const priority = getTaskPriorities(task.priority);
-              
+                    console.log(task);
 
                     return (
                       <DraggableCard
@@ -109,20 +115,35 @@ function TaskList({ tasks, onMoveTask }) {
                           title={task.text}
                           subtitle={project?.title || "No Project"}
                           description={task.taskDescription}
-                          dueDate={
-                            task.duDate ? "03-04-2026" : `${task.dueDate}`
-                          }
+                          dueDate={task.dueDate}
                           taskStatus={task.status}
                           priority={priority}
                           assignee={assignee}
                           tag={tag}
+                          progress={task.progress}
                         >
-                          {/* <button
-                            className="text-sm hover:text-red-700 text-red-300s"
-                            onClick={() => onDeleteTask(task.id)}
+                          <button
+                            className="text-gray-500 hover:rounded-full hover:bg-gray-200 p-1"
+                            onPointerDown={(e) => e.stopPropagation()}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleEditTask(task.id);
+                            }}
                           >
-                            Clear
-                          </button> */}
+                            <CiEdit size={15} />
+                          </button>
+
+                          <button
+                            className="text-gray-500 hover:rounded-full hover:bg-gray-200 p-1"
+                            onPointerDown={(e) => e.stopPropagation()}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              console.log("DELETE CLICKED");
+                              onDeleteTask(task.id);
+                            }}
+                          >
+                            <MdDeleteForever size={15} />
+                          </button>
                         </ItemCard>
                       </DraggableCard>
                     );
@@ -152,6 +173,7 @@ function TaskList({ tasks, onMoveTask }) {
                     const assignee = getAssignee(task.assigneeId);
                     const tag = TAGS.find((t) => t.id === task?.tagId);
                     const priority = getTaskPriorities(task.priority);
+                    console.log("progress", task);
                     return (
                       <DraggableCard
                         key={task.id}
@@ -163,20 +185,35 @@ function TaskList({ tasks, onMoveTask }) {
                           title={task.text}
                           subtitle={project?.title || "No Project"}
                           description={task.taskDescription}
-                          dueDate={
-                            !task.duDate ? `${task.dueDate}` : "03-04-2026"
-                          }
+                          dueDate={task.dueDate}
                           taskStatus={task.status}
                           priority={priority}
                           assignee={assignee}
                           tag={tag}
+                          progress={task.progress}
                         >
-                          {/* <button
-                            className="text-sm hover:text-red-700 text-red-300s"
-                            onClick={() => onDeleteTask(task.id)}
+                          <button
+                            className="text-gray-500 hover:rounded-full hover:bg-gray-200 p-1"
+                            onPointerDown={(e) => e.stopPropagation()}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleEditTask(task.id);
+                            }}
                           >
-                            Clear
-                          </button> */}
+                            <CiEdit size={15} />
+                          </button>
+
+                          <button
+                            className="text-gray-500 hover:rounded-full hover:bg-gray-200 p-1"
+                            onPointerDown={(e) => e.stopPropagation()}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              console.log("DELETE CLICKED");
+                              onDeleteTask(task.id);
+                            }}
+                          >
+                            <MdDeleteForever size={15} />
+                          </button>
                         </ItemCard>
                       </DraggableCard>
                     );
@@ -206,8 +243,7 @@ function TaskList({ tasks, onMoveTask }) {
                     const assignee = getAssignee(task.assigneeId);
                     const tag = TAGS.find((t) => t.id === task?.tagId);
                     const priority = getTaskPriorities(task.priority);
-               
-
+                    console.log("Done", task);
                     return (
                       <DraggableCard
                         key={task.id}
@@ -219,26 +255,32 @@ function TaskList({ tasks, onMoveTask }) {
                           title={task.text}
                           subtitle={project?.title || "No Project"}
                           description={task.taskDescription}
-                          dueDate={
-                            !task.duDate ? `${task.dueDate}` : "03-04-2026"
-                          }
+                          dueDate={task.dueDate}
                           taskStatus={task.status}
                           priority={priority}
                           assignee={assignee}
                           tag={tag}
+                          progress={task.progress}
                         >
                           {/* <button
-                              className="text-sm hover:text-red-700 text-red-300s"
-                              onClick={() => onDeleteTask(task.id)}
-                            >
-                              Clear
-                            </button> */}
-
-                          {/* <button
-                            onClick={() => onMoveTask(task.id, "todo")}
-                            className="text-xs text-gray-400"
+                            onPointerDown={(e) => e.stopPropagation()}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleEditTask(task.id);
+                            }}
                           >
-                            ↺ Undo
+                            <CiEdit size={15} />
+                          </button>
+
+                          <button
+                            onPointerDown={(e) => e.stopPropagation()}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              console.log("DELETE CLICKED");
+                              onDeleteTask(task.id);
+                            }}
+                          >
+                            <MdDeleteForever size={15} />
                           </button> */}
                         </ItemCard>
                       </DraggableCard>

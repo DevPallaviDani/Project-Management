@@ -52,7 +52,7 @@ function Sidebar({ mobileOpen = false, onCloseMobile = () => {} }) {
       {/* Bottom Navigation For small screen  */}
       <div
         className=" fixed bottom-0 left-0 right-0 z-50 flex justify-around items-center md:hidden *
-     border-t shadow-lg px-2 py-2 bg-sidebar "
+     border-t shadow-lg px-2 py-2 bg-sidebar overflow-visible"
       >
         {mobileMenuItems.map(({ to, icon: Icon, label }) => (
           <NavLink
@@ -84,11 +84,11 @@ function Sidebar({ mobileOpen = false, onCloseMobile = () => {} }) {
                     transition-all duration-300 bg-sidebar
                      ${isCollapsed ? "w-20" : "w-64"}
                    rounded-tr-3xl rounded-br-3xl
-                    p-3 md:block sticky top-0 h-screen`}
+                    p-3 md:block sticky top-0 h-screen overflow-visible`}
       >
         {/* Top Section*/}
         {/* Logo + Sidebar Toggle */}
-        <div className="group relative flex items-center justify-between mt-5 mb-10 m-2">
+        <div className="group relative flex items-center justify-between mt-5 mb-10 m-2 overflow-visible">
           {/* <SiTask size={30} className="ml-3" /> */}
           <img
             src={logo}
@@ -110,8 +110,8 @@ function Sidebar({ mobileOpen = false, onCloseMobile = () => {} }) {
                 size={18}
               />
               <span
-                className="absolute left-full ml-3 top-1/2 -translate-y-1/2
-               whitespace-nowrap rounded-lg px-3 py-1
+                className="absolute -translate-y-1/2
+               whitespace-nowrap rounded-lg 
                text-lg text-text-strong bg-card shadow-lg
                opacity-0 group-hover:opacity-100
                transition duration-200 pointer-events-none"

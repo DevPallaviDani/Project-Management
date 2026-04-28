@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Input from "../../components/UI/Input.jsx";
 import useProjects from "../../hooks/useWorkspace.jsx";
 // import useTask from "../../hooks/useTask.jsx";
@@ -11,46 +11,74 @@ import {
 } from "../../constants/global.js";
 import { users } from "../../data/Users.js";
 
-function NewTask({ onAddTask, onClose }) {
-   const modal = useRef();
-
-  const [taskData, setTaskData] = useState({
+function TaskModal({
+  mode = "add",
+  initialData = null,
+  onUpdateTask,
+  onClose,
+}) {
+  const modal = useRef();
+  const initialState = {
     title: "",
     description: "",
     dueDate: "",
     projectId: "",
     priority: "",
-    tag: "",
-    assigneeId:"" ,
-  });
+    tagId: "",
+    assigneeId: "",
+  };
+  const modeLabel = mode === "add" ? "Add" : "Edit";
+  const [taskData, setTaskData] = useState(initialState);
 
   const { onCloseModal, projects, handleAddTask } = useProjects();
   // const{handleAddTask}=useTask();
 
+  useEffect(() => {
+    if (mode === "edit" && initialData) {
+      setTaskData({
+        title: initialData.text || "",
+        description: initialData.taskDescription || "",
+        dueDate: initialData.dueDate || "",
+        projectId: initialData.projectId || "",
+        priority: initialData.priority || "",
+        tagId: initialData.tagId || "",
+        assigneeId: initialData.assigneeId || "",
+        status: initialData.status || "",
+      });
+    } else {
+      setTaskData(initialState);
+    }
+  }, [mode, initialData]);
+  console.log(mode, initialData,taskData);
   function handleSubmit() {
-
     if (
       taskData.title.trim() === "" ||
       taskData.description.trim() === "" ||
       taskData.dueDate === ""
     ) {
-      modal.current.open();
+      modal.current?.open?.();
       return;
     }
-
-
-    handleAddTask(taskData);
-
-    setTaskData({
-      title: "",
-      description: "",
-      dueDate: "",
-      projectId: "",
-      priority: "",
-      tag: "",
-      assigneeId: "",
-    });
-    onClose();
+    if (mode === "add") {
+      handleAddTask(taskData);
+      setTaskData({
+        title: "",
+        description: "",
+        dueDate: "",
+        projectId: "",
+        priority: "",
+        tag: "",
+        assigneeId: "",
+      });
+      onClose();
+    } else {
+      onUpdateTask({
+        id: initialData.id,
+        ...taskData,
+      });
+      setTaskData(initialState);
+      onClose();
+    }
   }
   return (
     <div
@@ -65,7 +93,7 @@ function NewTask({ onAddTask, onClose }) {
       >
         {/* Header */}
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-lg font-semibold">Add New Task</h2>
+          <h2 className="text-lg font-semibold">{modeLabel} Task</h2>
           <button onClick={onClose}>✖</button>
         </div>
         <div className="space-y-4 mb-5">
@@ -88,7 +116,7 @@ function NewTask({ onAddTask, onClose }) {
           />
           <div className="flex flex-row gap-3">
             <select
-              // value={taskData.projectId}
+              value={taskData.projectId || ""}
               id="projects"
               name="projects"
               onChange={(e) =>
@@ -113,7 +141,7 @@ function NewTask({ onAddTask, onClose }) {
             </select>
 
             <select
-              // value={taskData.priority || ""}
+              value={taskData.priority || ""}
               id="priority"
               name="priority"
               onChange={(e) =>
@@ -131,7 +159,7 @@ function NewTask({ onAddTask, onClose }) {
           </div>
           <div className="flex flex-row gap-3">
             <select
-              // value={taskData.tag || ""}
+              value={taskData.tagId || ""}
               id="tag"
               name="tag"
               onChange={(e) =>
@@ -148,7 +176,7 @@ function NewTask({ onAddTask, onClose }) {
             </select>
 
             <select
-              // value={taskData.assignees || ""}
+              value={taskData.assigneeId || ""}
               id="assignees"
               name="assignees"
               onChange={(e) =>
@@ -185,7 +213,7 @@ function NewTask({ onAddTask, onClose }) {
             onClick={handleSubmit}
             className="bg-btn-primary hover:bg-btn-primary-hover text-btn-primary px-4 py-2 rounded-lg transition"
           >
-            Add
+            {mode === "add" ? "Add" : "Update"}
           </Button>
         </div>
       </div>
@@ -193,4 +221,4 @@ function NewTask({ onAddTask, onClose }) {
   );
 }
 
-export default NewTask;
+export default TaskModal;

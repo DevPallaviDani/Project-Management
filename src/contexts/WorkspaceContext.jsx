@@ -9,12 +9,23 @@ import { loggedInUser } from "../constants/global.js";
 const WorkspaceContext = createContext({});
 
 export function WorkspaceProvider({ children }) {
+  const [taskModalMode, setTaskModalMode] = useState("add");
+  const [selectedTask, setSelectedTask] = useState(null);
+
   const [showTaskModal, setShowTaskModal] = useState(false);
   const [selectedTaskStatus, setSelectedTaskStatus] = useState("todo");
 
-  const openTaskModal = (selectedTaskStatus) => {
+  const openAddTaskModal = (status) => {
+    setTaskModalMode("add");
+    setSelectedTask(null);
+    setSelectedTaskStatus(status);
     setShowTaskModal(true);
-    setSelectedTaskStatus(selectedTaskStatus);
+  };
+
+  const openEditTaskModal = (task) => {
+    setTaskModalMode("edit");
+    setSelectedTask(task);
+    setShowTaskModal(true);
   };
   const onCloseTaskModal = () => {
     setShowTaskModal(false);
@@ -35,7 +46,10 @@ export function WorkspaceProvider({ children }) {
     const storedData = localStorage.getItem("projectState");
 
     return storedData
-      ? JSON.parse(storedData)
+      ? {
+          ...JSON.parse(storedData),
+          tasks: JSON.parse(storedData).tasks?.filter(Boolean) || [],
+        }
       : {
           selectedProjectId: undefined,
           projects: [],
@@ -46,11 +60,6 @@ export function WorkspaceProvider({ children }) {
   useEffect(() => {
     localStorage.setItem("projectState", JSON.stringify(projectsState));
   }, [projectsState]);
-
-   
-
-
-
 
   // ================= PROJECT =================
 
@@ -130,7 +139,28 @@ export function WorkspaceProvider({ children }) {
       };
     });
   }
+  function calculateProjectProgress(projectId, tasks) {
+     const projectTasks = tasks.filter(
+    (task) => task && task.projectId === projectId
+  );
 
+  if (projectTasks.length === 0) return 0;
+
+  const completed = projectTasks.filter(
+    (task) => task.status === "done"
+  ).length;
+
+  return Math.round((completed / projectTasks.length) * 100);
+  }
+  function calculateOverallProjectProgress(projects, tasks) {
+  if (projects.length === 0) return 0;
+
+  const totalProgress = projects.reduce((sum, project) => {
+    return sum + calculateProjectProgress(project.id, tasks);
+  }, 0);
+
+  return Math.round(totalProgress / projects.length);
+}
   // ================= TASK =================
 
   function handleAddTask(taskData) {
@@ -148,6 +178,12 @@ export function WorkspaceProvider({ children }) {
         taskProject: taskProject,
         dueDate: taskData.dueDate,
         status: selectedTaskStatus ? selectedTaskStatus : "todo",
+        progress:
+          selectedTaskStatus === "done"
+            ? 100
+            : selectedTaskStatus === "progress"
+              ? 50
+              : 0,
         priority: taskData.priority,
         createdAt: new Date(),
         assigneeId: taskData.assigneeId,
@@ -160,6 +196,7 @@ export function WorkspaceProvider({ children }) {
         timestamp: new Date(),
         taskId: newTask.id,
         type: "TASK_CREATED",
+        createdBy: loggedInUser.userId,
       };
       return {
         ...prevState,
@@ -176,21 +213,93 @@ export function WorkspaceProvider({ children }) {
       };
     });
   }
+  function handleUpdateTask(updatedTask) {
+    setProjectsState((prevState) => {
+      const updatedTasks = prevState.tasks
+        .map((task) => {
+          if (!task) return null;
 
+          if (task.id === updatedTask.id) {
+            return {
+              ...task,
+              text: updatedTask.title,
+              taskDescription: updatedTask.description,
+              dueDate: updatedTask.dueDate,
+              priority: updatedTask.priority,
+              projectId: updatedTask.projectId,
+              assigneeId: updatedTask.assigneeId,
+              tagId: updatedTask.tagId,
+            };
+          }
+
+          return task;
+        })
+        .filter(Boolean);
+      const newActivity = {
+        id: Date.now(),
+        message: `Task "${updatedTask.title}" updated `,
+        timestamp: new Date(),
+        taskId: updatedTask.id,
+        type: "TASK_UPDATED",
+        updatedBy: loggedInUser.userId,
+      };
+      return {
+        ...prevState,
+        tasks: updatedTasks,
+        activityLog: [...(prevState.activityLog || []), newActivity],
+      };
+    });
+  }
   {
     /*  HANDLE MOVE TASKS */
   }
   function handleMoveTask(taskId, newStatus) {
     setProjectsState((prevState) => {
       const updatedTasks = prevState.tasks.map((task) =>
-        task.id === taskId ? { ...task, status: newStatus } : task,
+        // task.id === taskId ? { ...task, status: newStatus } : task,
+        {
+          if (task.id === taskId) {
+            let progress = 0;
+
+            if (newStatus === "progress") progress = 50;
+            if (newStatus === "done") progress = 100;
+
+            return { ...task, status: newStatus, progress };
+          }
+          return task;
+        },
       );
+      const task = prevState.tasks.find((t) => t.id === taskId);
+      const newActivity = {
+        id: Date.now(),
+        message: `Change status of "${task.text}" from ${task.status} to ${newStatus} `,
+        timestamp: new Date(),
+        taskId: task.id,
+        type: "TASK_STATUS_CHANGE",
+        updatedBy: loggedInUser.userId,
+      };
       return {
         ...prevState,
         tasks: updatedTasks,
+        activityLog: [...(prevState.activityLog || []), newActivity],
       };
     });
   }
+
+  function calculateOverallTaskProgress(tasks) {
+  const validTasks = tasks.filter((t) => t);
+
+  if (validTasks.length === 0) return 0;
+
+  const completed = validTasks.filter(
+    (task) => task.status === "done"
+  ).length;
+console.log("valid tasks",validTasks,"Completed",completed);
+console.log(Math.round((completed/validTasks.length)*100));
+
+
+  return Math.round((completed/validTasks.length)*100);
+}
   // ================= DERIVED =================
   {
     /* PROJECT CONTENTS */
@@ -227,10 +336,8 @@ export function WorkspaceProvider({ children }) {
   const totalProjects = projectsState.projects.length;
   const totalTasks = projectsState.tasks.length;
   const completedTasks = projectsState.tasks.filter(
-    (task) => task.status === "done",
+    (task) => task && task.status === "done",
   ).length;
-
-  
 
   const selectedProject = projectsState.projects.find(
     (project) => project.id === projectsState.selectedProjectId,
@@ -241,9 +348,11 @@ export function WorkspaceProvider({ children }) {
   );
 
   // TASK BREAKDOWN (KANBAN READY)
-  const todoTasks = tasks.filter((task) => task.status === "todo");
-  const progressTasks = tasks.filter((task) => task.status === "progress");
-  const doneTasks = tasks.filter((task) => task.status === "done");
+  const todoTasks = tasks.filter((task) => task && task.status === "todo");
+  const progressTasks = tasks.filter(
+    (task) => task && task.status === "progress",
+  );
+  const doneTasks = tasks.filter((task) => task && task.status === "done");
 
   //   STATS (Selected Project)
   const projectStats = {
@@ -279,7 +388,7 @@ export function WorkspaceProvider({ children }) {
         filteredTasks,
         totalProjects,
         totalTasks,
-        completedTasks,        
+        completedTasks,
         todoTasks,
         doneTasks,
         progressTasks,
@@ -289,6 +398,8 @@ export function WorkspaceProvider({ children }) {
         selectedTaskStatus,
         showProjectModal,
         selectedProjectStatus,
+        taskModalMode,
+        selectedTask,
 
         // actions
         handleAddProject,
@@ -297,11 +408,18 @@ export function WorkspaceProvider({ children }) {
         handleStartAddProject,
         handleSelectProject,
         handleMoveProjects,
+        calculateProjectProgress,
+        calculateOverallProjectProgress,
+
+
         handleAddTask,
         handleDeleteTask,
         handleMoveTask,
+        handleUpdateTask,
+        calculateOverallTaskProgress,
 
-        openTaskModal,
+        openAddTaskModal,
+        openEditTaskModal,
         onCloseTaskModal,
         setShowTaskModal,
 

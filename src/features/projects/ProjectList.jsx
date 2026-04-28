@@ -9,8 +9,8 @@ function ProjectList({ handleDeleteProject, handleMoveProjects }) {
     openProjectModal,
     // handleDeleteProject,
     // handleMoveProjects,
+    calculateProjectProgress,
   } = useWorkspace();
- 
 
   const startedProjects = projects?.filter(
     (p) => p.projectStatus === "started",
@@ -21,7 +21,7 @@ function ProjectList({ handleDeleteProject, handleMoveProjects }) {
   const completedProjects = projects?.filter(
     (p) => p.projectStatus === "completed",
   ).length;
- 
+
   const handleAddClick = (status) => {
     openProjectModal(status);
   };
@@ -37,24 +37,33 @@ function ProjectList({ handleDeleteProject, handleMoveProjects }) {
                 onAdd={() => handleAddClick("started")}
               >
                 <div className="grid grid-cols-1 sm:grid-cols-1 gap-3">
-                  {projects?.slice(0, 8)
+                  {projects
+                    ?.slice(0, 8)
                     .filter((project) => project.projectStatus === "started")
                     .map((project) => {
                       const projectTasks = tasks.filter(
                         (t) => t.projectId === project.id,
                       );
-                     
+                      const progress = calculateProjectProgress(
+                        project.id,
+                        tasks,
+                      );
+                      console.log(progress);
+
                       return (
                         <div key={project.id} className="flex flex-col gap-2">
                           <ItemCard
                             key={project.id}
                             title={project.title}
-                            subtitle={projectTasks.length
+                            subtitle={
+                              projectTasks.length
                                 ? `${projectTasks.length} tasks`
-                                : "NO TASK"}
+                                : "NO TASK"
+                            }
                             description={project.description}
                             dueDate={project.dueDate}
                             projectStatus={project.projectStatus}
+                            progress={progress}
                           />
                           <div className="flex flex-row justify-between">
                             <button
@@ -86,13 +95,17 @@ function ProjectList({ handleDeleteProject, handleMoveProjects }) {
                 onAdd={() => handleAddClick("ongoing")}
               >
                 <div className="grid grid-cols-2 sm:grid-cols-1 gap-3">
-                  {projects?.filter((project) => project.projectStatus === "ongoing")
-                    // .slice(0, 8)                   
+                  {projects
+                    ?.filter((project) => project.projectStatus === "ongoing")
+                    // .slice(0, 8)
                     .map((project) => {
                       const projectTasks = tasks.filter(
                         (t) => t.projectId === project.id,
                       );
-                      
+                      const progress = calculateProjectProgress(
+                        project.id,
+                        tasks,
+                      );
                       return (
                         <div key={project.id} className="flex flex-col gap-2">
                           <ItemCard
@@ -105,6 +118,7 @@ function ProjectList({ handleDeleteProject, handleMoveProjects }) {
                             }
                             dueDate={project.dueDate}
                             projectStatus={project.projectStatus}
+                            progress={progress}
                           />
 
                           <div className="flex flex-row justify-between">
@@ -137,13 +151,17 @@ function ProjectList({ handleDeleteProject, handleMoveProjects }) {
                 onAdd={() => handleAddClick("completed")}
               >
                 <div className="grid grid-cols-1 sm:grid-cols-1 gap-3">
-                  {projects?.filter((project) => project.projectStatus === "completed")
-                    // .slice(0, 8)                   
+                  {projects
+                    ?.filter((project) => project.projectStatus === "completed")
+                    // .slice(0, 8)
                     .map((project) => {
                       const projectTasks = tasks.filter(
                         (t) => t.projectId === project.id,
                       );
-                    
+                      const progress = calculateProjectProgress(
+                        project.id,
+                        tasks,
+                      );
                       return (
                         <div key={project.id} className="flex flex-col gap-2">
                           <ItemCard
@@ -156,6 +174,7 @@ function ProjectList({ handleDeleteProject, handleMoveProjects }) {
                             }
                             dueDate={project.dueDate}
                             projectStatus={project.projectStatus}
+                            progress={progress}
                           />
 
                           <div className="flex flex-row justify-between">

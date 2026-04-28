@@ -12,6 +12,7 @@ function ItemCard({
   priority,
   assignee,
   tag,
+  progress,
 }) {
   // ✅ Line-through logic
   const isTaskDone = taskStatus === "done";
@@ -44,26 +45,38 @@ function ItemCard({
   return (
     <>
       <div
-        className={` p-1 pt-3 shadow-md 
+        className={` p-2 pt-3 shadow-md 
           hover:shadow-lg hover:scale-105  duration-300 transition-all
-      cursor-grab active:cursor-grabbing
-      text-xs rounded-2xl  ${getPriorityColor(priority)}
-     
-      ${isOverdue() ? "border-2 border-red-500" : ""}
+      cursor-grab active:cursor-grabbing overflow-visible 
+      text-xs rounded-2xl  ${getPriorityColor(priority)}    
       `}
       >
+        {/*  // ${isOverdue() ? "border-2 border-red-500" : ""} */}
         {/* Priority Badge (only if exists) */}
         {/* {priority && (
           <span className={`text-xs m-2 uppercase rounded text-text-muted ${getPriorityColor(priority)}`}>
             {priority}
           </span>
         )} */}
-        <div className=" group relative rounded-xl  bg-card ml-2">
-          <div className="border-b pb-5">
+        <div className="  rounded-xl  bg-card ml-2">
+          <div className=" pb-5 group relative inline-block gap-1">
             {/* Title */}
             <span
-              className={`text-2xl font-bold text-text-heading ${textStyle} mt-2`}
+              className={`text-2xl font-bold text-text-heading ${textStyle} mt-2
+             `}
             >
+              {isOverdue() && (
+                <span className="text-red-500 text-sm p-1 font-semibold">
+                  ⚠️
+                  <span
+                    className={`absolute opacity-0 group-hover:opacity-100 
+               ${isOverdue() ? "underline decoration-red-300 text-red-400 bg-gray-700 border-cyan-700 p-2 rounded-md" : ""}
+              text-xs`}
+                  >
+                    Overdue
+                  </span>
+                </span>
+              )}
               {title}
             </span>
             {tag && (
@@ -73,15 +86,34 @@ function ItemCard({
                 {tag.label}
               </span>
             )}
+
             {subtitle && (
               <p className="text-lg text-text-secondary">{subtitle}</p>
             )}
             {/* Description */}
             <p className="text-sm text-text-muted">{description}</p>
           </div>
-
+          <div
+          // className={`flex ${progress > 0 ? "visible" : "hidden"}`}
+          >
+            <>
+              <div className="w-full bg-gray-200 rounded-full h-2 mt-2 ">
+                <div
+                  className="bg-blue-300 h-2 rounded-full w-full items-end pr-1"
+                  style={{ width: `${progress}%` }}
+                >
+                  
+                </div>
+              </div>
+              <span
+              // className={`${progress > 0 ? "visible" : "hidden"}`}
+              >
+                {progress}%{" "}
+              </span>
+            </>
+          </div>
           {/* Bottom Row */}
-          <div className="flex justify-between items-center mt-4 ">
+          <div className="flex justify-between items-center mt-4 border-t p-1">
             <div className="flex justify-center gap-2">
               {priority && (
                 <span
@@ -94,22 +126,21 @@ function ItemCard({
                 {dueDate}
               </span>
             </div>
-            <div className="relative group flex items-center gap-2">
-              {/* Due Date */}
+            <div className=" flex  gap-2 relative">
+              {/* assignee */}
               {assignee && (
-                <div className="flex  items-center gap-2">
+                <div className=" group relative ">
                   <img
                     src={assignee?.avatar}
-                    //  "/src/assets/images/profileavatar.png"
-                    className="rounded-full w-8 h-8"
+                    className="rounded-full w-8 h-8 cursor-pointer"
                   />
-                  {/* <span className="text-lg text-text-secondary">
-                {assignee?.name}
-              </span> */}
+
                   <span
-                    className="absolute bottom-5 right-1 text-sm 
-              text-text-subheading  whitespace-nowrap opacity-0 
-              group-hover:opacity-100 p-2  transition pointer-events-none z-50
+                    className="absolute bottom-10 left-0 -translate-x-1/2
+                               text-xs bg-gray-800 text-white px-2 py-1 rounded
+                               opacity-0 group-hover:opacity-100
+                               transition whitespace-nowrap
+                               pointer-events-none z-[9999] 
               "
                   >
                     {assignee?.name}
@@ -126,13 +157,13 @@ function ItemCard({
             </div>
           </div>
           {/* Overdue */}
-          {isOverdue() && (
+          {/* {isOverdue() && (
             <p className="text-red-500 text-xs mt-1 font-semibold">
               ⚠️ Overdue
             </p>
-          )}
+          )} */}
           {/* Actions */}
-          <div className="flex justify-end mt-2">{children}</div>
+          <div className="flex justify-end mt-2 ">{children}</div>
         </div>
       </div>
     </>

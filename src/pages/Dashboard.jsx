@@ -15,6 +15,7 @@ import {
 } from "../utils/helper.js";
 import { users } from "../data/Users.js";
 import { TAGS, TASK_PRIORITIES } from "../constants/global.js";
+import { CircularProgressBar } from "@tomickigrzegorz/react-circular-progress-bar";
 
 function Dashboard() {
   const {
@@ -24,6 +25,8 @@ function Dashboard() {
     openProjectModal,
     handleResetStorage,
     projects,
+    calculateOverallProjectProgress,
+    calculateOverallTaskProgress,
   } = useWorkspace();
   // const { openTaskModal, tasks } = useTask();
 
@@ -72,7 +75,13 @@ function Dashboard() {
       return;
     }
   };
-
+  const projectProgress = calculateOverallProjectProgress(
+    projects,
+    tasks,
+  );
+  const taskProgress = calculateOverallTaskProgress(tasks);
+  console.log("Task Progress ",taskProgress);
+  
   return (
     <div
       className="flex max-auto w-full md:px-2 rounded-3xl  
@@ -86,7 +95,18 @@ function Dashboard() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-4">
             {/* TASKS */}
             <div>
-              <SectionWrapper
+              {/* Task Progress */}
+              <div className="bg-card p-5 rounded-2xl shadow-md flex flex-col items-center">
+                <h3 className="text-sm text-gray-500 mb-2">Tasks Progress</h3>
+                <CircularProgressBar
+                  percent={taskProgress}
+                  size={120}
+                />
+                <p className="text-xs mt-2 text-gray-400">
+                  {tasks.length} tasks
+                </p>
+              </div>
+              {/* <SectionWrapper
                 title="Assigned Tasks"
                 count={totalAssignedTasks}
                 onAdd={() => handleAddClick("todo", "Task")}
@@ -102,10 +122,10 @@ function Dashboard() {
                       </Button>
                     </div>
                   )}
-                  {( filteredTask || assignedTasks)
+                  {(filteredTask || assignedTasks)
                     //  assignedTasks
                     .slice(0, 4)
-                    .map((task) => {   
+                    .map((task) => {
                       const project = getProjectByTask(task);
                       const assignee = getAssignee(task.assigneeId);
                       const tag = TAGS.find((t) => t.id === task?.tagId);
@@ -131,11 +151,24 @@ function Dashboard() {
                       );
                     })}
                 </div>
-              </SectionWrapper>
+              </SectionWrapper> */}
             </div>
             {/* PROJECTS */}
             <div>
-              <SectionWrapper
+              <div className="bg-card p-5 rounded-2xl shadow-md flex flex-col items-center">
+                <h3 className="text-sm text-gray-500 mb-2">
+                  Projects Progress
+                </h3>
+                <CircularProgressBar
+                  percent={projectProgress}
+                  size={120}
+                />
+                <p className="text-xs mt-2 text-gray-400">
+                  {projects.length} projects
+                </p>
+              </div>
+
+              {/* <SectionWrapper
                 title="Projects"
                 count={projects.length}
                 onAdd={() => handleAddClick("started", "Project")}
@@ -165,7 +198,7 @@ function Dashboard() {
                       );
                     })}
                 </div>
-              </SectionWrapper>
+              </SectionWrapper> */}
             </div>
           </div>
         </div>

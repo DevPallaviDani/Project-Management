@@ -14,15 +14,15 @@ import useWorkspace from "../../hooks/useWorkspace.jsx";
 import Button from "../../components/UI/Button.jsx";
 
 function CalendarPage() {
-  const { tasks } = useWorkspace();
+  const { tasks, openEditTaskModal, openAddTaskModal } = useWorkspace();
   const [currentDate, setCurrentDate] = useState(new Date());
   const [view, setView] = useState("Month");
   const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   const btns = [
-    {
-      id: "btn_day",
-      label: "Days",
-    },
+    // {
+    //   id: "btn_day",
+    //   label: "Days",
+    // },
     {
       id: "btn_week",
       label: "Week",
@@ -31,10 +31,10 @@ function CalendarPage() {
       id: "btn_month",
       label: "Month",
     },
-    {
-      id: "btn_year",
-      label: "Year",
-    },
+    // {
+    //   id: "btn_year",
+    //   label: "Year",
+    // },
   ];
 
   // Get Start of Month
@@ -98,7 +98,10 @@ function CalendarPage() {
       );
     });
   };
-
+  const handleDayClick = (currentDate) => {
+    setCurrentDate(currentDate);
+    setView("Week");
+  };
   //  detect Current Month
   const isCurrentMonth = (date) => {
     return date.getMonth() === currentDate.getMonth();
@@ -135,6 +138,14 @@ function CalendarPage() {
     newDate.setDate(currentDate.getDate() + offset * 7);
 
     setCurrentDate(newDate);
+  };
+
+  const handleAddClick = (selectedstatus) => {
+    openAddTaskModal(selectedstatus);
+  };
+  const handleEditTask = (id) => {
+    const task = tasks.find((t) => t.id === id);
+    openEditTaskModal(task, "edit");
   };
 
   return (
@@ -212,6 +223,8 @@ function CalendarPage() {
                   key={index}
                   className={`relative min-h-[70px] pt-6 pl-1 rounded-lg
                   border border-slate-500 bg-card  ${isToday ? "border-blue-300" : ""}`}
+                  onDoubleClick={() => handleDayClick(date)}
+                //  onClick={()=> handleAddClick("todo")}
                 >
                   {/* Date  */}
                   <div>
@@ -294,14 +307,10 @@ function CalendarPage() {
               const dayTasks = tasksForDay(date);
               const isToday = date && isSameDay(date, new Date());
 
-              {
-                console.log(dayTasks);
-              }
-
               return (
                 <>
                   <div key={index} className="relative text-center ">
-                    <div className=" bg-sidebar rounded-lg shadow-lg hover:scale-105 ">
+                    <div className=" bg-sidebar rounded-lg shadow-lg hover:scale-105 p-1">
                       <span
                         className={`pl-1 py-1 ${isToday ? "rounded-full bg-pink-200" : ""}`}
                       >
@@ -322,18 +331,23 @@ function CalendarPage() {
                           const tag = TAGS.find((t) => t.id === task?.tagId);
                           const priority = getTaskPriorities(task.priority);
                           const taskStatus = getStatusByTask(task);
+                          console.log(task);
+                          
                           return (
-                            <ItemCard
-                              id={task.id}
-                              title={task.text}
-                              subtitle={project?.title || "No Project"}
-                              description={task.taskDescription}
-                              dueDate={task.dueDate}
-                              taskStatus={taskStatus}
-                              priority={priority}
-                              assignee={assignee}
-                              tag={tag}
-                            />
+                            <div onDoubleClick={() => handleEditTask(task.id)}>
+                              <ItemCard
+                                id={task.id}
+                                title={task.text}
+                                subtitle={project?.title || "No Project"}
+                                description={task.taskDescription}
+                                dueDate={task.dueDate}
+                                taskStatus={taskStatus}
+                                priority={priority}
+                                assignee={assignee}
+                                tag={tag}
+                                progress={task.progress}
+                              />
+                            </div>
                           );
                         })}
                     </div>
