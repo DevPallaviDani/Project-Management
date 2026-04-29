@@ -5,7 +5,11 @@ import useProjects from "../../hooks/useWorkspace.jsx";
 // import useTask from "../../hooks/useTask.jsx";
 
 function QuickActionBar() {
-  const { openProjectModal,openTaskModal,handleResetStorage } = useProjects();
+  const { openProjectModal,openAddTaskModal,handleResetStorage,openEditTaskModal } = useProjects();
+  const handleAddClick = (selectedstatus) => {
+    openAddTaskModal(selectedstatus);
+  };
+
   // const{openTaskModal}=useTask();
   return (
     <>
@@ -13,7 +17,7 @@ function QuickActionBar() {
       border-border border-b bg-muted text-text-light">
         <div title="Add Task">
           <Button className="bg-btn-primary hover:bg-btn-primary-hover text-btn-primary px-4 py-2 rounded-lg transition"
-           onClick={() => openTaskModal("todo")}>+ Task</Button>
+           onClick={() => handleAddClick("todo")}>+ Task</Button>
         </div>
         <div title="Add Project">
         <Button className="bg-btn-primary hover:bg-btn-primary-hover text-btn-primary px-4 py-2 rounded-lg transition" 

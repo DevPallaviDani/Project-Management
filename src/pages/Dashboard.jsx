@@ -17,6 +17,7 @@ import {
 import { users } from "../data/Users.js";
 import { TAGS, TASK_PRIORITIES } from "../constants/global.js";
 import { CircularProgressBar } from "@tomickigrzegorz/react-circular-progress-bar";
+import QuickActionBar from "../components/dashboard/QuickActionBar.jsx";
 
 function Dashboard() {
   const {
@@ -163,14 +164,17 @@ function Dashboard() {
           <div>
             {/* STATS */}
             <StatsGrid />
+            <QuickActionBar />
             {/* MAIN GRID */}
-            <div className="grid grid-rows-2 md:grid-rows-2  mt-3 ml-2">
+            <div className="grid grid-rows-1 md:grid-rows-2  mt-3 ml-2">
               {/* TASKS */}
 
               {/* Task Progress */}
               <div className=" flex gap-3">
-                <div className="bg-card p-5 rounded-2xl shadow-md  grid grid-cols-2 gap-2 ">
-                  <h3 className="text-xl text-gray-500 mb-2 text-center">Tasks Overview</h3>
+                <div className="bg-card p-5 rounded-2xl shadow-md  grid md:grid-cols-2 gap-2 ">
+                  <h3 className="text-xl text-gray-500 mb-2 text-center">
+                    Tasks Overview
+                  </h3>
 
                   <div className="mt-5">
                     <CircularProgressBar
@@ -192,7 +196,7 @@ function Dashboard() {
                   </div>
                 </div>
 
-                <div className="bg-card p-5 rounded-2xl shadow-md  grid grid-cols-2 gap-2">
+                <div className="bg-card p-5 rounded-2xl shadow-md  grid md:grid-cols-2 gap-2">
                   <h3 className="text-xl text-gray-500 mb-2">
                     Projects Overview
                   </h3>
