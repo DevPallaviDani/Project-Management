@@ -13,7 +13,7 @@ function QuickActionBar() {
   // const{openTaskModal}=useTask();
   return (
     <>
-      <div className="flex flex-1 gap-1 items-center justify-between p-1 sm:p-2 rounded-md
+      <div className="flex justify-start gap-2 p-1 sm:p-2 rounded-md
       border-border border-b bg-muted text-text-light">
         <div title="Add Task">
           <Button className="bg-btn-primary hover:bg-btn-primary-hover text-btn-primary px-4 py-2 rounded-lg transition"

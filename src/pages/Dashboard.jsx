@@ -165,6 +165,7 @@ function Dashboard() {
             {/* STATS */}
             <StatsGrid />
             <QuickActionBar />
+
             {/* MAIN GRID */}
             <div className="grid grid-rows-1 md:grid-rows-2  mt-3 ml-2">
               {/* TASKS */}
