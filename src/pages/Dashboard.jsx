@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { motion } from "motion/react";
 import useWorkspace from "../hooks/useWorkspace.jsx";
 // import useTask from "../hooks/useTask.jsx";
 import StatsGrid from "../components/stats/StatsGrid.jsx";
@@ -19,8 +20,11 @@ import { CircularProgressBar } from "@tomickigrzegorz/react-circular-progress-ba
 
 function Dashboard() {
   const {
-    stats,
+    projectStats,
     tasks,
+    completedTasks,
+    todoTasks,
+    progressTasks,
     openTaskModal,
     openProjectModal,
     handleResetStorage,
@@ -29,7 +33,17 @@ function Dashboard() {
     calculateOverallTaskProgress,
   } = useWorkspace();
   // const { openTaskModal, tasks } = useTask();
-
+  const {
+    total,
+    completed,
+    pending,
+    todo,
+    inProcess,
+    totalProjects,
+    completedProjects,
+    startedProjects,
+    pendingProjects,
+  } = projectStats;
   const [filteredTask, setFilteredTask] = useState([]);
   const [hasTask, setHastask] = useState(false);
 
@@ -75,139 +89,143 @@ function Dashboard() {
       return;
     }
   };
-  const projectProgress = calculateOverallProjectProgress(
-    projects,
-    tasks,
-  );
+  const projectProgress = calculateOverallProjectProgress(projects, tasks);
   const taskProgress = calculateOverallTaskProgress(tasks);
-  console.log("Task Progress ",taskProgress);
-  
+  console.log("Task Progress ", taskProgress);
+
+  const getGradient = (progress) => {
+    if (progress < 30) return "url(#redGradient)";
+    if (progress < 70) return "url(#yellowGradient)";
+    if (progress < 85) return "url(#greenGradient)";
+    return "url(#blueGradient)";
+  };
+
+  const gradientElement = (
+    <div className="relative">
+      <svg width="0" height="0">
+        <defs>
+          <linearGradient id="blueGradient">
+            <stop offset="0%" stopColor="#3ea1ec" />
+            <stop offset="100%" stopColor="#67e8f9" />
+          </linearGradient>
+          <linearGradient id="redGradient">
+            <stop offset="0%" stopColor="#991b1b" />
+            <stop offset="100%" stopColor="#f87171" />
+          </linearGradient>
+
+          <linearGradient id="greenGradient">
+            <stop offset="0%" stopColor="#17ad37" />
+            <stop offset="100%" stopColor="#98ec2d" />
+          </linearGradient>
+
+          <linearGradient id="yellowGradient">
+            <stop offset="0%" stopColor="#fbcf33" />
+            <stop offset="100%" stopColor="#fef08a" />
+          </linearGradient>
+        </defs>
+      </svg>
+    </div>
+  );
+
   return (
-    <div
-      className="flex max-auto w-full md:px-2 rounded-3xl  
+    <>
+      <>
+        <div className="relative">
+          <svg width="0" height="0">
+            <defs>
+              <linearGradient id="blueGradient">
+                <stop offset="0%" stopColor="#3ea1ec" />
+                <stop offset="100%" stopColor="#67e8f9" />
+              </linearGradient>
+              <linearGradient id="redGradient">
+                <stop offset="0%" stopColor="#991b1b" />
+                <stop offset="100%" stopColor="#f87171" />
+              </linearGradient>
+
+              <linearGradient id="greenGradient">
+                <stop offset="0%" stopColor="#17ad37" />
+                <stop offset="100%" stopColor="#98ec2d" />
+              </linearGradient>
+
+              <linearGradient id="yellowGradient">
+                <stop offset="0%" stopColor="#fbcf33" />
+                <stop offset="100%" stopColor="#fef08a" />
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+      </>
+      <div
+        className="flex max-auto w-full md:px-2 rounded-3xl  
     muted-bg text-text-primary overflow-x-hidden "
-    >
-      <div className="grid grid-cols-1 md:grid-cols-[80%_20%] gap-4 mt-20 md:mt-2">
-        <div>
-          {/* STATS */}
-          <StatsGrid />
-          {/* MAIN GRID */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-4">
-            {/* TASKS */}
-            <div>
+      >
+        <div className="grid grid-cols-1 md:grid-cols-[80%_20%] gap-4 mt-20 md:mt-2">
+          <div>
+            {/* STATS */}
+            <StatsGrid />
+            {/* MAIN GRID */}
+            <div className="grid grid-rows-2 md:grid-rows-2  mt-3 ml-2">
+              {/* TASKS */}
+
               {/* Task Progress */}
-              <div className="bg-card p-5 rounded-2xl shadow-md flex flex-col items-center">
-                <h3 className="text-sm text-gray-500 mb-2">Tasks Progress</h3>
-                <CircularProgressBar
-                  percent={taskProgress}
-                  size={120}
-                />
-                <p className="text-xs mt-2 text-gray-400">
-                  {tasks.length} tasks
-                </p>
-              </div>
-              {/* <SectionWrapper
-                title="Assigned Tasks"
-                count={totalAssignedTasks}
-                onAdd={() => handleAddClick("todo", "Task")}
-              >
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {filteredTask.length === 0 && (
-                    <div className="border border-dashed border-gray-300 flex justify-center">
-                      <Button
-                        className="text-lg "
-                        onClick={() => handleAddClick("todo", "Task")}
-                      >
-                        No task yet - create one
-                      </Button>
-                    </div>
-                  )}
-                  {(filteredTask || assignedTasks)
-                    //  assignedTasks
-                    .slice(0, 4)
-                    .map((task) => {
-                      const project = getProjectByTask(task);
-                      const assignee = getAssignee(task.assigneeId);
-                      const tag = TAGS.find((t) => t.id === task?.tagId);
-                      const priority = getTaskPriorities(
-                        TASK_PRIORITIES,
-                        task.priority,
-                      );
-                      return (
-                        <ItemCard
-                          key={task.id}
-                          id={task.id}
-                          title={task.text}
-                          subtitle={project?.title || "No Project"}
-                          description={task.taskDescription}
-                          dueDate={
-                            task.duDate ? "03-04-2026" : `${task.dueDate}`
-                          }
-                          taskStatus={task.status}
-                          priority={priority}
-                          assignee={assignee}
-                          tag={tag}
-                        />
-                      );
-                    })}
-                </div>
-              </SectionWrapper> */}
-            </div>
-            {/* PROJECTS */}
-            <div>
-              <div className="bg-card p-5 rounded-2xl shadow-md flex flex-col items-center">
-                <h3 className="text-sm text-gray-500 mb-2">
-                  Projects Progress
-                </h3>
-                <CircularProgressBar
-                  percent={projectProgress}
-                  size={120}
-                />
-                <p className="text-xs mt-2 text-gray-400">
-                  {projects.length} projects
-                </p>
-              </div>
+              <div className=" flex gap-3">
+                <div className="bg-card p-5 rounded-2xl shadow-md  grid grid-cols-2 gap-2 ">
+                  <h3 className="text-xl text-gray-500 mb-2 text-center">Tasks Overview</h3>
 
-              {/* <SectionWrapper
-                title="Projects"
-                count={projects.length}
-                onAdd={() => handleAddClick("started", "Project")}
-              >
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {(projects || [])
-                    .filter((p) => p.projectStatus !== "completed")
-                    .slice(0, 8)
-                    .map((project) => {
-                      const projectTasks = tasks.filter(
-                        (task) => task.projectId === project.id,
-                      );
+                  <div className="mt-5">
+                    <CircularProgressBar
+                      percent={taskProgress}
+                      size={120}
+                      colorSlice={getGradient(taskProgress)}
+                      colorCircle="#e5e7eb"
+                      colorText="#111"
+                      stroke={10}
+                      text={`${completedTasks}/${tasks.length}`}
+                    />
+                  </div>
 
-                      return (
-                        <ItemCard
-                          key={project.id}
-                          title={project.title}
-                          subtitle={project.description}
-                          description={
-                            projectTasks.length
-                              ? `${projectTasks.length} tasks`
-                              : "NO TASK"
-                          }
-                          dueDate={project.dueDate}
-                          projectStatus={project.projectStatus}
-                        />
-                      );
-                    })}
+                  <div className="pl-6 text-sm text-gray-500 space-y-2">
+                    <p>Total:{total}</p>
+                    <p>✅ Done: {completed}</p>
+                    <p>🚧 In Progress: {inProcess}</p>
+                    <p>📌 Todo: {todo}</p>
+                  </div>
                 </div>
-              </SectionWrapper> */}
+
+                <div className="bg-card p-5 rounded-2xl shadow-md  grid grid-cols-2 gap-2">
+                  <h3 className="text-xl text-gray-500 mb-2">
+                    Projects Overview
+                  </h3>
+
+                  <div className="mt-5">
+                    <CircularProgressBar
+                      percent={projectProgress}
+                      size={120}
+                      colorSlice={getGradient(projectProgress)}
+                      colorCircle="#e5e7eb"
+                      colorText="#111"
+                      stroke={10}
+                      // text={`${completedTasks}/${tasks.length}`}
+                    />
+                  </div>
+
+                  <div className="pl-6 text-sm text-gray-500 space-y-2">
+                    <p>Total : {totalProjects}</p>
+                    <p>✅ Completed: {completedProjects}</p>
+                    <p>🚧 On going: {pendingProjects}</p>
+                    <p>📌 Started: {startedProjects}</p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="order-2">
-          <SidePanel tasks={assignedTasks} onDateSelect={handleDateFilter} />
+          <div className="order-2">
+            <SidePanel tasks={assignedTasks} onDateSelect={handleDateFilter} />
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 

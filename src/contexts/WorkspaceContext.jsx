@@ -334,6 +334,9 @@ console.log(Math.round((completed/validTasks.length)*100));
   }
   //   STATS (GLOBAL)
   const totalProjects = projectsState.projects.length;
+  const completedProjects=projectsState.projects.filter((p)=>p.projectStatus==="completed")
+  const startedProjects=projectsState.projects.filter((p)=>p.projectStatus==="started")
+  const pendingProjects=projectsState.projects.filter((p)=>p.projectStatus==="ongoing")
   const totalTasks = projectsState.tasks.length;
   const completedTasks = projectsState.tasks.filter(
     (task) => task && task.status === "done",
@@ -356,9 +359,15 @@ console.log(Math.round((completed/validTasks.length)*100));
 
   //   STATS (Selected Project)
   const projectStats = {
-    total: filteredTasks.length,
+    total: tasks.length,
     completed: doneTasks.length,
+    todo:todoTasks.length,
+    inProcess:progressTasks.length,
     pending: todoTasks.length + progressTasks.length,
+    totalProjects:totalProjects,
+    completedProjects:completedProjects.length,
+    startedProjects:startedProjects.length,
+    pendingProjects:pendingProjects.length
   };
   // CLEAR DATA
   function handleResetStorage() {
@@ -389,9 +398,9 @@ console.log(Math.round((completed/validTasks.length)*100));
         totalProjects,
         totalTasks,
         completedTasks,
-        todoTasks,
-        doneTasks,
+        todoTasks,        
         progressTasks,
+        doneTasks,
         content,
         projectStats,
         showTaskModal,

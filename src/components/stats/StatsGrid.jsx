@@ -27,7 +27,7 @@ function StatsGrid() {
 
   return (
     <div
-      className="grid grid-cols-5 md:grid-cols-5 xl:grid-cols-5 sm:grid-cols-1 gap-4 mb-2 
+      className="grid grid-cols-5 md:grid-cols-5 xl:grid-cols-5 sm:grid-cols-1 gap-3 mb-2 
     px-3 py-3 sm:px-3 sm:py-3 justify-center bg-muted rounded-xl"
     >
       <StatsCard

@@ -4,7 +4,7 @@ function StatsCard({ title, value, icon }) {
   return (
     <>
       <div
-        className="p-4 flex flex-row justify-center bg-card rounded-md gap-4 
+        className="p-3 flex flex-row items-center bg-card rounded-2xl shadow-md gap-4 
        hover:shadow-indigo-500/20 hover:rounded-xl hover:shadow-lg transition"
       >
         {icon}
