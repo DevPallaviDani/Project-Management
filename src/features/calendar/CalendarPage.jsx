@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { TAGS } from "../../constants/global.js";
 import { IoIosArrowBack } from "react-icons/io";
 import { IoIosArrowForward } from "react-icons/io";
@@ -16,7 +16,17 @@ import Button from "../../components/UI/Button.jsx";
 function CalendarPage() {
   const { tasks, openEditTaskModal, openAddTaskModal } = useWorkspace();
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [view, setView] = useState("Month");
+  const [calendarView, setCalendarView] = useState(() => {
+    const savedCalendarView = localStorage.getItem("ProjectCalendarView");
+    return savedCalendarView || "Month";
+  });
+  useEffect(() => {
+    localStorage.setItem(
+      "ProjectCalendarView",
+      calendarView 
+    );
+  }, [calendarView]);
+
   const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   const btns = [
     // {
@@ -100,7 +110,7 @@ function CalendarPage() {
   };
   const handleDayClick = (currentDate) => {
     setCurrentDate(currentDate);
-    setView("Week");
+    setCalendarView("Week");
   };
   //  detect Current Month
   const isCurrentMonth = (date) => {
@@ -165,7 +175,7 @@ function CalendarPage() {
               return (
                 <div key={btn.id} className="border-r last:border-none p-1">
                   <button
-                    onClick={() => setView(btn.label)}
+                    onClick={() => setCalendarView(btn.label)}
                     className="text-lg p-2 "
                   >
                     {btn.label}
@@ -177,7 +187,7 @@ function CalendarPage() {
           <div className="flex justify-between gap-4">
             <button
               onClick={() =>
-                view === "Month" ? changeMonth(-1) : changeWeek(-1)
+                calendarView === "Month" ? changeMonth(-1) : changeWeek(-1)
               }
               className="rounded-lg hover:bg-gray-300  "
             >
@@ -193,7 +203,7 @@ function CalendarPage() {
             </button>
             <button
               onClick={() =>
-                view === "Month" ? changeMonth(1) : changeWeek(1)
+                calendarView === "Month" ? changeMonth(1) : changeWeek(1)
               }
               className="rounded-lg hover:bg-gray-300  "
             >
@@ -204,7 +214,7 @@ function CalendarPage() {
         </div>
 
         {/* Month View  */}
-        <div className={view === "Month" ? "block" : "hidden"}>
+        <div className={calendarView === "Month" ? "block" : "hidden"}>
           {/* WeekDays  */}
           <div className="grid grid-cols-7 text-lg text-gray-500 mb-2">
             {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
@@ -224,7 +234,7 @@ function CalendarPage() {
                   className={`relative min-h-[70px] pt-6 pl-1 rounded-lg
                   border border-slate-500 bg-card  ${isToday ? "border-blue-300" : ""}`}
                   onDoubleClick={() => handleDayClick(date)}
-                //  onClick={()=> handleAddClick("todo")}
+                  //  onClick={()=> handleAddClick("todo")}
                 >
                   {/* Date  */}
                   <div>
@@ -300,7 +310,7 @@ function CalendarPage() {
           </div>
         </div>
         {/* Week View  */}
-        <div className={view === "Week" ? "block" : "hidden"}>
+        <div className={calendarView === "Week" ? "block" : "hidden"}>
           <div className="grid grid-cols-7 text-lg text-gray-500 mb-2 ">
             {weekDays.map((date, index) => {
               const dayOf = date.getDay();
@@ -331,8 +341,7 @@ function CalendarPage() {
                           const tag = TAGS.find((t) => t.id === task?.tagId);
                           const priority = getTaskPriorities(task.priority);
                           const taskStatus = getStatusByTask(task);
-                          console.log(task);
-                          
+
                           return (
                             <div onDoubleClick={() => handleEditTask(task.id)}>
                               <ItemCard

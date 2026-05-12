@@ -10,9 +10,14 @@ import useWorkspace from "../../hooks/useWorkspace.jsx";
 import useInsights from "../../hooks/useInsights.jsx";
 import DraggableCard from "../../components/UI/DraggableCard.jsx";
 import { users } from "../../data/Users.js";
-import { TAGS, TASK_PRIORITIES } from "../../constants/global.js";
+import {
+  TAGS,
+  TASK_PRIORITIES,
+  TASK_STATUSES,
+} from "../../constants/global.js";
 import { TbProgress } from "react-icons/tb";
 import { IoCheckmarkDoneCircle } from "react-icons/io5";
+import { MdRateReview } from "react-icons/md";
 import { FaRegCircle } from "react-icons/fa";
 import { CiEdit } from "react-icons/ci";
 import { MdDeleteForever } from "react-icons/md";
@@ -21,14 +26,30 @@ import {
   getAssignee,
   getProjectByTask,
   getTaskPriorities,
+  getUserById,
+  getTagById,
+  getStatusByTask,
+  getProgressById,
 } from "../../utils/helper.js";
 
-function TaskList({ tasks, onMoveTask, onDeleteTask }) {
+function TaskList() {
   // const { openTaskModal } = useTask();
-  const { projects, openEditTaskModal, openAddTaskModal } = useWorkspace();
+  const { tasks, projects, openEditTaskModal, openAddTaskModal } =
+    useWorkspace();
   const { deadlines } = useInsights();
-  const [activeTask, setActiveTask] = useState(null);
 
+  const tableHeader = [
+    "Task",
+    "Project",
+    "Description",
+    "Status",
+    "Tag",
+    "Priority",
+    "Progress",
+    "DueDate",
+    "Assignee To",
+    "Actions",
+  ];
   const handleAddClick = (selectedstatus) => {
     openAddTaskModal(selectedstatus);
   };
@@ -38,45 +59,8 @@ function TaskList({ tasks, onMoveTask, onDeleteTask }) {
     openEditTaskModal(task, "edit");
   };
 
-  function handleDragStart(event) {
-    const { active } = event;
-    const task = tasks.find((t) => t.id === active.id);
-    setActiveTask(task);
-  }
-
-  function handleDragEnd(event) {
-    const { active, over } = event;
-
-    if (!over) return;
-
-    const taskId = active.id;
-    const newStatus = over.id;
-
-    onMoveTask(taskId, newStatus);
-    setActiveTask(null);
-  }
-
-  {
-    // tasks.length === 0 && (
-    //   <div className="text-center my-4">
-    //     <p className="text-stone-500"> No tasks yet</p>
-    //     <p className="text-sm text-stone-400">
-    //       Start by adding your first task!{" "}
-    //     </p>
-    //   </div>
-    // );
-  }
-  const getAssignee = (userId) => {
-    return users.find((user) => user.id === userId);
-  };
-  const getTaskPriorities = (priority) => {
-    return TASK_PRIORITIES.find((p) => p.label === priority);
-  };
-  const getProjectByTask = (task) => {
-    return projects.find((p) => p.id === task.projectId);
-  };
-
   const todoTasks = tasks?.filter((task) => task.status === "todo").length;
+  const reviewTasks = tasks?.filter((task) => task.status === "review").length;
   const progressTasks = tasks?.filter(
     (task) => task.status === "progress",
   ).length;
@@ -84,230 +68,155 @@ function TaskList({ tasks, onMoveTask, onDeleteTask }) {
 
   return (
     <div className="flex-1">
-      <div className="grid grid-cols-1 md:grid-cols-3 ">
-        {tasks?.length > 0 && (
-          <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-            <DroppableColumn id="todo" className="h-full overflow-x-auto  ">
-              <SectionWrapper
-                title="To-do"
-                count={todoTasks}
-                onAdd={() => handleAddClick("todo")}
-                color="text-rose-200"
-                Icon={FaRegCircle}
-              >
-                {tasks
-                  ?.filter((task) => task.status === "todo")
-                  .map((task) => {
-                    const project = getProjectByTask(task);
-                    const assignee = getAssignee(task.assigneeId);
-                    const tag = TAGS.find((t) => t.id === task?.tagId);
-                    const priority = getTaskPriorities(task.priority);
-                    console.log(task);
+      {tasks?.length > 0 && (
+        <table className="overflow-hidden w-full border-collapse rounded-xl shadow-md  bg-gray-200 text-gray-600">
+          <thead>
+            <tr className="border ">
+              {tableHeader.map((t) => (
+                <th className="bg-panel text-left p-2">{t}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {tasks.map((task) => {
+              const project = getProjectByTask(task);
+              const assignees = getUserById(task.assigneeId);
+              const tag = getTagById(task.tagId);
+              const priority = getTaskPriorities(task.priority);
+              const status = getStatusByTask(task);
+              const progress = getProgressById(task.status);
+              const isDisabled = task.status === "done";
 
-                    return (
-                      <DraggableCard
-                        key={task.id}
-                        data={task}
-                        className="flex flex-col"
+              return (
+                <tr
+                  key={task.id}
+                  className={`text-left border bg-[#f8f9fa] hover:bg-[#f1f1f1] 
+                   
+                    `}
+                >
+                  <td className="p-3 border-b">{task.text}</td>
+                  <td>{project.title}</td>
+                  <td className="truncate">{task.taskDescription}</td>
+                  <td>
+                    <span
+                      className={` text-sm rounded-full ${status.color} px-2 py-1`}
+                    >
+                      {task.status.toUpperCase()}
+                    </span>
+                  </td>
+                  <td>
+                    <span
+                      className={`${tag.color} text-sm rounded-full  px-2 py-1`}
+                    >
+                      {tag.label}
+                    </span>
+                  </td>
+                  <td className="">
+                    <span
+                      className={`${priority.color} text-sm rounded-full  px-2 py-1`}
+                    >
+                      {priority.label}
+                    </span>
+                  </td>
+                  <td className="pr-2">
+                    <span className="text-xs">{task.progress}%</span>
+                    <div className="w-full bg-gray-200 rounded-full h-2 ">
+                      <div
+                        className={`${progress.color} h-2 rounded-full w-full items-end `}
+                        style={{ width: `${task.progress}%` }}
+                      ></div>
+                    </div>
+                  </td>
+                  <td className="pl-1">{task.dueDate}</td>
+                  <td>
+                    <div className=" flex gap-2 relative justify-center">
+                      {/* assignee */}
+                      {assignees && (
+                        <div className=" group relative ">
+                          <img
+                            src={assignees?.avatar}
+                            className="rounded-full w-8 h-8 cursor-pointer"
+                          />
+
+                          <span
+                            className="absolute bottom-10 left-0 -translate-x-1/2
+                               text-xs bg-gray-800 text-white px-2 py-1 rounded
+                               opacity-0 group-hover:opacity-100
+                               transition whitespace-nowrap
+                               pointer-events-none z-[9999] 
+              "
+                          >
+                            {assignees?.name}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  </td>
+                  <td>
+                    <div className="flex justify-end ">
+                      <button
+                        className={`group relative text-gray-500 hover:rounded-full 
+                           hover:bg-gray-200 p-1 
+                          disabled:bg-gray-300 disabled:rounded-full disabled:text-gray-500 disabled:cursor-not-allowed transition-colors `}
+                        onPointerDown={(e) => e.stopPropagation()}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleEditTask(task.id);
+                        }}
                       >
-                        <ItemCard
-                          id={task.id}
-                          title={task.text}
-                          subtitle={project?.title || "No Project"}
-                          description={task.taskDescription}
-                          dueDate={task.dueDate}
-                          taskStatus={task.status}
-                          priority={priority}
-                          assignee={assignee}
-                          tag={tag}
-                          progress={task.progress}
+                        <CiEdit size={15} />
+                        <span
+                          className="absolute bottom-10 left-0 -translate-x-1/2
+                               text-xs bg-gray-800 text-white px-2 py-1 rounded
+                               opacity-0 group-hover:opacity-100
+                               transition whitespace-nowrap
+                               pointer-events-none z-[9999] 
+              "
                         >
-                          <button
-                            className="text-gray-500 hover:rounded-full hover:bg-gray-200 p-1"
-                            onPointerDown={(e) => e.stopPropagation()}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleEditTask(task.id);
-                            }}
-                          >
-                            <CiEdit size={15} />
-                          </button>
+                          Edit
+                        </span>
+                      </button>
 
-                          <button
-                            className="text-gray-500 hover:rounded-full hover:bg-gray-200 p-1"
-                            onPointerDown={(e) => e.stopPropagation()}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              console.log("DELETE CLICKED");
-                              onDeleteTask(task.id);
-                            }}
-                          >
-                            <MdDeleteForever size={15} />
-                          </button>
-                        </ItemCard>
-                      </DraggableCard>
-                    );
-                  })}
-                <div className="border border-dashed border-gray-300 flex justify-center">
-                  <Button
-                    className="text-lg "
-                    onClick={() => handleAddClick("todo")}
-                  >
-                    + Add Task
-                  </Button>
-                </div>
-              </SectionWrapper>
-            </DroppableColumn>
-            <DroppableColumn id="progress" className="h-full overflow-x-auto">
-              <SectionWrapper
-                title="In Progress"
-                count={progressTasks}
-                onAdd={() => handleAddClick("progress")}
-                color="text-purple-300"
-                Icon={TbProgress}
-              >
-                {tasks
-                  .filter((task) => task.status === "progress")
-                  .map((task) => {
-                    const project = getProjectByTask(task);
-                    const assignee = getAssignee(task.assigneeId);
-                    const tag = TAGS.find((t) => t.id === task?.tagId);
-                    const priority = getTaskPriorities(task.priority);
-                    console.log("progress", task);
-                    return (
-                      <DraggableCard
-                        key={task.id}
-                        data={task}
-                        className="flex flex-col"
+                      <button
+                        className="group relative text-gray-500 hover:rounded-full hover:bg-gray-200 p-1"
+                        onPointerDown={(e) => e.stopPropagation()}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          // console.log("DELETE CLICKED");
+                          onDeleteTask(task.id);
+                        }}
                       >
-                        <ItemCard
-                          id={task.id}
-                          title={task.text}
-                          subtitle={project?.title || "No Project"}
-                          description={task.taskDescription}
-                          dueDate={task.dueDate}
-                          taskStatus={task.status}
-                          priority={priority}
-                          assignee={assignee}
-                          tag={tag}
-                          progress={task.progress}
+                        <MdDeleteForever size={15} />
+                        <span
+                          className="absolute bottom-10 left-0 -translate-x-1/2
+                               text-xs bg-gray-800 text-white px-2 py-1 rounded
+                               opacity-0 group-hover:opacity-100
+                               transition whitespace-nowrap
+                               pointer-events-none z-[9999] 
+              "
                         >
-                          <button
-                            className="text-gray-500 hover:rounded-full hover:bg-gray-200 p-1"
-                            onPointerDown={(e) => e.stopPropagation()}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleEditTask(task.id);
-                            }}
-                          >
-                            <CiEdit size={15} />
-                          </button>
-
-                          <button
-                            className="text-gray-500 hover:rounded-full hover:bg-gray-200 p-1"
-                            onPointerDown={(e) => e.stopPropagation()}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              console.log("DELETE CLICKED");
-                              onDeleteTask(task.id);
-                            }}
-                          >
-                            <MdDeleteForever size={15} />
-                          </button>
-                        </ItemCard>
-                      </DraggableCard>
-                    );
-                  })}
-                <div className="border border-dashed border-gray-300 flex justify-center">
-                  <Button
-                    className="text-lg "
-                    onClick={() => handleAddClick("progress")}
-                  >
-                    + Add Task
-                  </Button>
-                </div>
-              </SectionWrapper>
-            </DroppableColumn>
-            <DroppableColumn id="done" className="h-full overflow-x-auto">
-              <SectionWrapper
-                title="Done"
-                count={doneTasks}
-                onAdd={() => handleAddClick("done")}
-                color="text-lime-600"
-                Icon={IoCheckmarkDoneCircle}
-              >
-                {tasks
-                  .filter((task) => task.status === "done")
-                  .map((task) => {
-                    const project = getProjectByTask(task);
-                    const assignee = getAssignee(task.assigneeId);
-                    const tag = TAGS.find((t) => t.id === task?.tagId);
-                    const priority = getTaskPriorities(task.priority);
-                    console.log("Done", task);
-                    return (
-                      <DraggableCard
-                        key={task.id}
-                        data={task}
-                        className="flex flex-col"
-                      >
-                        <ItemCard
-                          id={task.id}
-                          title={task.text}
-                          subtitle={project?.title || "No Project"}
-                          description={task.taskDescription}
-                          dueDate={task.dueDate}
-                          taskStatus={task.status}
-                          priority={priority}
-                          assignee={assignee}
-                          tag={tag}
-                          progress={task.progress}
-                        >
-                          {/* <button
-                            onPointerDown={(e) => e.stopPropagation()}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleEditTask(task.id);
-                            }}
-                          >
-                            <CiEdit size={15} />
-                          </button>
-
-                          <button
-                            onPointerDown={(e) => e.stopPropagation()}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              console.log("DELETE CLICKED");
-                              onDeleteTask(task.id);
-                            }}
-                          >
-                            <MdDeleteForever size={15} />
-                          </button> */}
-                        </ItemCard>
-                      </DraggableCard>
-                    );
-                  })}
-                <div className="border border-dashed border-gray-300 flex justify-center">
-                  <Button
-                    className="text-lg "
-                    onClick={() => handleAddClick("done")}
-                  >
-                    + Add Task
-                  </Button>
-                </div>
-              </SectionWrapper>
-            </DroppableColumn>
-            <DragOverlay>
-              {activeTask ? (
-                <div className="bg-[#e7e9ec] p-3 rounded-xl shadow-xl scale-105">
-                  {activeTask.text}
-                </div>
-              ) : null}
-            </DragOverlay>
-          </DndContext>
-        )}
-      </div>
+                          Delete
+                        </span>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      )}
     </div>
   );
 }
 
 export default TaskList;
+{
+  /* <div key={task.id} className="flex gap-5 border-b mt-2">
+                <div>{task.text}</div>
+                <span>{project.title}</span>
+                <span className="truncate">{task.taskDescription}</span>
+
+                <div>{task.status}</div>
+              </div> */
+}

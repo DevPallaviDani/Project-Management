@@ -7,6 +7,7 @@ import { GoTasklist } from "react-icons/go";
 import useWorkspace from "../../hooks/useWorkspace.jsx";
 import { loggedInUser } from "../../constants/global.js";
 import useInsights from "../../hooks/useInsights.jsx";
+import QuickActionBar from "../dashboard/QuickActionBar.jsx";
 
 function StatsGrid() {
   const { totalProjects, totalTasks, completedTasks, tasks } = useWorkspace();
@@ -15,7 +16,6 @@ function StatsGrid() {
   const overDueTasksOfUsers = overDueTasks.tasks.filter(
     (task) => task.assigneeId === loggedInUser.userId,
   ).length;
- 
 
   const totalAssignedTasks = tasks.filter(
     (t) => t.assigneeId === loggedInUser.userId && t.status !== "done",
@@ -24,37 +24,42 @@ function StatsGrid() {
     (task) => task.status !== "done",
   ).length;
 
-
   return (
     <div
-      className="grid grid-cols-5 md:grid-cols-5 xl:grid-cols-5 sm:grid-cols-1 gap-3 mb-2 
-    px-3 py-3 sm:px-3 sm:py-3 justify-center bg-muted rounded-xl"
+      className="grid grid-cols-5 md:grid-cols-4 xl:grid-cols-5 sm:grid-cols-1 gap-3 mb-2 
+    px-4 py-4 sm:px-3 sm:py-3  bg-muted rounded-xl"
     >
       <StatsCard
         title="Total Projects"
         value={totalProjects}
         icon={<GoProjectSymlink size={40} className="hover:scale-105" />}
+        color={"bg-blue-100 text-blue-600"}
       />
       <StatsCard
         title="Total Tasks"
         value={totalTasks}
         icon={<MdTask size={40} className="hover:scale-105 " color={"gray"} />}
+        color={"bg-gray-100 text-gray-600"}
       />
       <StatsCard
-        title="Completed Tasks"
+        title="Completed"
         value={completedTasks}
         icon={<SiGoogletasks size={40} color={"green"} />}
+        color={"bg-green-100 text-green-900"}
       />
       <StatsCard
-        title="Assigned Tasks"
+        title="Assigned"
         value={activeAssignedTasks}
         icon={<GoTasklist size={40} color={"blue"} />}
+        color={"bg-cyan-100 text-cyan-600"}
       />
       <StatsCard
-        title="overDue Tasks"
+        title="overDue"
         value={overDueTasksOfUsers}
         icon={<GoTasklist size={40} color={"red"} />}
+        color={"bg-sky-100 text-sky-600"}
       />
+      {/* <QuickActionBar /> */}
     </div>
   );
 }

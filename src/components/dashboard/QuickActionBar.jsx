@@ -5,27 +5,46 @@ import useProjects from "../../hooks/useWorkspace.jsx";
 // import useTask from "../../hooks/useTask.jsx";
 
 function QuickActionBar() {
-  const { openProjectModal,openAddTaskModal,handleResetStorage,openEditTaskModal } = useProjects();
-  const handleAddClick = (selectedstatus) => {
-    openAddTaskModal(selectedstatus);
+  const {
+    openAddProjectModal,
+    openAddTaskModal,
+    handleResetStorage,
+    openEditTaskModal,
+  } = useProjects();
+  const handleAddClick = () => {
+    openAddTaskModal();
   };
 
   // const{openTaskModal}=useTask();
   return (
     <>
-      <div className="flex justify-start gap-2 p-1 sm:p-2 rounded-md
-      border-border border-b bg-muted text-text-light">
+      <div
+        className="flex flex-col gap-3 rounded-md
+       bg-muted text-text-light justify-end"
+      >
         <div title="Add Task">
-          <Button className="bg-btn-primary hover:bg-btn-primary-hover text-btn-primary px-4 py-2 rounded-lg transition"
-           onClick={() => handleAddClick("todo")}>+ Task</Button>
+          <Button
+            className="w-full bg-btn-primary hover:bg-btn-primary-hover text-btn-primary px-4 py-2 rounded-full transition text-center"
+            onClick={() => handleAddClick("todo")}
+          >
+            + Task
+          </Button>
         </div>
         <div title="Add Project">
-        <Button className="bg-btn-primary hover:bg-btn-primary-hover text-btn-primary px-4 py-2 rounded-lg transition" 
-        onClick={() => openProjectModal("started")}>+ Project</Button>
+          <Button
+            className="w-full bg-btn-primary hover:bg-btn-primary-hover text-btn-primary px-4 py-2 rounded-full transition text-center"
+            onClick={() => openAddProjectModal()}
+          >
+            + Project
+          </Button>
         </div>
         <div title="Delete All">
-          <Button className="btn-ghost-text hover:bg-btn-primary-hover  px-4 py-2 rounded-full transition"
-           onClick={() => handleResetStorage()}>X</Button>
+          <Button
+            className="w-full bg-btn-primary hover:bg-btn-primary-hover text-btn-primary px-4 py-2 rounded-full transition"
+            onClick={() => handleResetStorage()}
+          >
+            Clear All Data
+          </Button>
         </div>
       </div>
     </>

@@ -6,13 +6,13 @@ import { MdLightMode } from "react-icons/md";
 function ToggleTheme() {
   
       const [darkMode, setDarkMode] = useState(() => {
-        const savedTheme = localStorage.getItem("project-Management-them");
+        const savedTheme = localStorage.getItem("project-Management-theme");
         return savedTheme === "dark";
       });
       useEffect(() => {
         document.documentElement.classList.toggle("dark", darkMode);
         localStorage.setItem(
-          "project-Management-them",
+          "project-Management-theme",
           darkMode ? "dark" : "light",
         );
       },[darkMode]);

@@ -9,7 +9,7 @@ import Dashboard from "./pages/Dashboard.jsx";
 import Header from "./components/layout/Header.jsx";
 import { Menu } from "lucide-react";
 import { useState } from "react";
-import NewProject from "./features/projects/NewProject.jsx";
+import ProjectModal from "./features/projects/ProjectModal.jsx";
 import SidePanel from "./features/dashboard/SidePanel.jsx";
 
 function App() {
@@ -17,7 +17,10 @@ function App() {
     selectedProjectStatus,
     handleAddProject,
     showProjectModal,
+    handleUpdateProject,
     onCloseProjectModal,
+    editingProject,
+    projectModalMode,
     showTaskModal,
     onCloseTaskModal,
     selectedTaskStatus,
@@ -40,7 +43,7 @@ function App() {
             onCloseMobile={() => setIsMobileSidebarOpen(false)}
           />
           <div className="flex-1 w-full mr-2">
-            <Header />
+           
             <main className=" w-full bg-bg pt-15 pb-20 md:pt-0 md:pb-0 md:p-4">
               <Routes>
                 <Route path="/" element={<Dashboard />} />
@@ -70,15 +73,12 @@ function App() {
             />
           )}
           {showProjectModal && (
-            <NewProject
-              onAddNewProject={(project) => {
-                handleAddProject({
-                  ...project,
-                  projectStatus: selectedProjectStatus,
-                });
-                onCloseProjectModal();
-              }}
+            <ProjectModal
+             mode={projectModalMode}
+              initialData={editingProject}
               onClose={onCloseProjectModal}
+              onUpdateProject={handleUpdateProject}
+              
             />
           )}
         </div>

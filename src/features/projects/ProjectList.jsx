@@ -2,16 +2,37 @@ import React, { use } from "react";
 import useWorkspace from "../../hooks/useWorkspace.jsx";
 import SectionWrapper from "../../components/common/SectionWrapper.jsx";
 import ItemCard from "../../components/common/ItemCard.jsx";
-function ProjectList({ handleDeleteProject, handleMoveProjects }) {
+import {
+  getUserById,
+  getProgressById,
+  getProjectType,
+  getAssignee,
+  getProgressColor,
+} from "../../utils/helper.js";
+import { CiEdit } from "react-icons/ci";
+import { MdDeleteForever } from "react-icons/md";
+function ProjectList() {
   const {
     projects,
     tasks,
-    openProjectModal,
-    // handleDeleteProject,
-    // handleMoveProjects,
+    openAddProjectModal,
+    openEditProjectModal,
+    handleMoveProject,
+    handleDeleteProject,
     calculateProjectProgress,
+    handleUpdateProject,
   } = useWorkspace();
-
+  const tableHeader = [
+    "Project",
+    "Description",
+    "Tasks",
+    "Status",
+    "Progress",
+    "DueDate",
+    "Project Type",
+    "Project Owner",
+    "Actions",
+  ];
   const startedProjects = projects?.filter(
     (p) => p.projectStatus === "started",
   ).length;
@@ -23,183 +44,154 @@ function ProjectList({ handleDeleteProject, handleMoveProjects }) {
   ).length;
 
   const handleAddClick = (status) => {
-    openProjectModal(status);
+    openAddProjectModal(status);
+  };
+  const handleEditProject = (id) => {
+    const project = projects.find((p) => p.id === id);
+    openEditProjectModal(project, "edit");
   };
   return (
     <>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {projects.length > 0 && (
-          <>
-            <div className="h-full overflow-x-auto">
-              <SectionWrapper
-                title="Started Projects"
-                count={startedProjects}
-                onAdd={() => handleAddClick("started")}
-              >
-                <div className="grid grid-cols-1 sm:grid-cols-1 gap-3">
-                  {projects
-                    ?.slice(0, 8)
-                    .filter((project) => project.projectStatus === "started")
-                    .map((project) => {
-                      const projectTasks = tasks.filter(
-                        (t) => t.projectId === project.id,
-                      );
-                      const progress = calculateProjectProgress(
-                        project.id,
-                        tasks,
-                      );
-                      console.log(progress);
+      <div className="flex-1">
+        {projects?.length > 0 && (
+          <table className="overflow-hidden w-full border-collapse rounded-xl shadow-md  bg-gray-200 text-gray-600">
+            <thead>
+              <tr className="border ">
+                {tableHeader.map((t) => (
+                  <th className="bg-panel text-left p-2">{t}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {projects.map((project) => {
+                const projectType = getProjectType(project.projectType);
+                const projectOwner = getAssignee(project.ownerId);
+                const tasksOfProject = tasks.filter(
+                  (task) => task.projectId === project.id,
+                );
+                const doneTasks = tasksOfProject.filter(
+                  (tp) => tp.status === "done",
+                ).length;
+                const projectProcess = calculateProjectProgress(
+                  project.id,
+                  tasks,
+                );
+                const progress = getProgressById(project.status);
+                const isProjectDone = status.id === "completed";
+                return (
+                  <tr
+                    key={project.id}
+                    className={`text-left border bg-[#f8f9fa] hover:bg-[#f1f1f1] 
+                      ${isProjectDone ? "line-through decoration-gray-400" : ""}`}
+                  >
+                    <td className="p-3 border-b">{project.title}</td>
+                    <td className="truncate">{project.description}</td>
+                    <td>
+                      {" "}
+                      <span className=" rounded-2xl bg-slate-200 px-2 py-1 text-sm  text-gray-600 ">
+                        Task {doneTasks}/{tasksOfProject.length}
+                      </span>
+                    </td>
+                    <td>
+                      <span
+                        className={` text-sm rounded-full 
+                              px-2 py-1`}
+                      >
+                        {project.projectStatus.toUpperCase()}
+                      </span>
+                    </td>
+                    <td className="pr-2">
+                      <span className="text-xs">{projectProcess}%</span>
+                      <div className="w-full bg-gray-200 rounded-full h-2 ">
+                        <div
+                          className={`${getProgressColor(projectProcess)} h-2 rounded-full w-full items-end pr-1`}
+                          style={{ width: `${projectProcess}%` }}
+                        ></div>
+                      </div>
+                    </td>
+                    <td className="pl-1">{project.dueDate}</td>
+                    <td>
+                      {" "}
+                      <span
+                        className={` inline-block px-2 py-1 text-sm
+                 text-gray-600 ${projectType.color} 
+                 rounded-full`}
+                      >
+                        {projectType.label}
+                      </span>
+                    </td>
+                    <td className="flex gap-2 relative justify-center">
+                      {" "}
+                      <div className=" group relative ">
+                        <img
+                          src={projectOwner?.avatar}
+                          className="rounded-full w-8 h-8 cursor-pointer"
+                        />
 
-                      return (
-                        <div key={project.id} className="flex flex-col gap-2">
-                          <ItemCard
-                            key={project.id}
-                            title={project.title}
-                            subtitle={
-                              projectTasks.length
-                                ? `${projectTasks.length} tasks`
-                                : "NO TASK"
-                            }
-                            description={project.description}
-                            dueDate={project.dueDate}
-                            projectStatus={project.projectStatus}
-                            progress={progress}
-                          />
-                          <div className="flex flex-row justify-between">
-                            <button
-                              className="text-sm hover:text-red-700 text-red-300s"
-                              onClick={() => handleDeleteProject(project.id)}
-                            >
-                              Clear
-                            </button>
-                            <button
-                              onClick={() =>
-                                handleMoveProjects(project.id, "ongoing")
-                              }
-                              className="text-xs text-blue-500"
-                            >
-                              {" "}
-                              → Move
-                            </button>
-                          </div>
-                        </div>
-                      );
-                    })}
-                </div>
-              </SectionWrapper>
-            </div>
-            <div className="h-full overflow-x-auto">
-              <SectionWrapper
-                title="On Going Projects"
-                count={onGoingProjects}
-                onAdd={() => handleAddClick("ongoing")}
-              >
-                <div className="grid grid-cols-2 sm:grid-cols-1 gap-3">
-                  {projects
-                    ?.filter((project) => project.projectStatus === "ongoing")
-                    // .slice(0, 8)
-                    .map((project) => {
-                      const projectTasks = tasks.filter(
-                        (t) => t.projectId === project.id,
-                      );
-                      const progress = calculateProjectProgress(
-                        project.id,
-                        tasks,
-                      );
-                      return (
-                        <div key={project.id} className="flex flex-col gap-2">
-                          <ItemCard
-                            key={project.id}
-                            title={project.title}
-                            description={
-                              projectTasks.length
-                                ? `${projectTasks.length} tasks`
-                                : "NO TASK"
-                            }
-                            dueDate={project.dueDate}
-                            projectStatus={project.projectStatus}
-                            progress={progress}
-                          />
+                        <span
+                          className="absolute bottom-10 left-0 -translate-x-1/2
+                               text-xs bg-gray-800 text-white px-2 py-1 rounded
+                               opacity-0 group-hover:opacity-100
+                               transition whitespace-nowrap
+                               pointer-events-none z-[9999] 
+              "
+                        >
+                          {projectOwner?.name}
+                        </span>
+                      </div>
+                    </td>
 
-                          <div className="flex flex-row justify-between">
-                            <button
-                              className="text-sm hover:text-red-700 text-red-300s"
-                              onClick={() => handleDeleteProject(project.id)}
-                            >
-                              Clear
-                            </button>
-                            <button
-                              onClick={() =>
-                                handleMoveProjects(project.id, "completed")
-                              }
-                              className="text-xs text-blue-500"
-                            >
-                              {" "}
-                              → Move
-                            </button>
-                          </div>
-                        </div>
-                      );
-                    })}
-                </div>
-              </SectionWrapper>
-            </div>
-            <div className="h-full overflow-x-auto">
-              <SectionWrapper
-                title="Completed Projects"
-                count={completedProjects}
-                onAdd={() => handleAddClick("completed")}
-              >
-                <div className="grid grid-cols-1 sm:grid-cols-1 gap-3">
-                  {projects
-                    ?.filter((project) => project.projectStatus === "completed")
-                    // .slice(0, 8)
-                    .map((project) => {
-                      const projectTasks = tasks.filter(
-                        (t) => t.projectId === project.id,
-                      );
-                      const progress = calculateProjectProgress(
-                        project.id,
-                        tasks,
-                      );
-                      return (
-                        <div key={project.id} className="flex flex-col gap-2">
-                          <ItemCard
-                            key={project.id}
-                            title={project.title}
-                            description={
-                              projectTasks.length
-                                ? `${projectTasks.length} tasks`
-                                : "NO TASK"
-                            }
-                            dueDate={project.dueDate}
-                            projectStatus={project.projectStatus}
-                            progress={progress}
-                          />
+                    <td>
+                      <div className="flex justify-end ">
+                        <button
+                          className="group relative text-gray-500 hover:rounded-full  hover:bg-gray-200 p-1"
+                          onPointerDown={(e) => e.stopPropagation()}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleEditProject(project.id);
+                          }}
+                        >
+                          <CiEdit size={15} />
+                          <span
+                            className="absolute bottom-10 left-0 -translate-x-1/2
+                                     text-xs bg-gray-800 text-white px-2 py-1 rounded
+                                     opacity-0 group-hover:opacity-100
+                                     transition whitespace-nowrap
+                                     pointer-events-none z-[9999] 
+                    "
+                          >
+                            Edit
+                          </span>
+                        </button>
 
-                          <div className="flex flex-row justify-between">
-                            <button
-                              className="text-sm hover:text-red-700 text-red-300s"
-                              onClick={() => handleDeleteProject(project.id)}
-                            >
-                              Clear
-                            </button>
-                            <button
-                              onClick={() =>
-                                handleMoveProjects(project.id, "started")
-                              }
-                              className="text-xs text-gray-400"
-                            >
-                              ↺ Undo
-                            </button>
-                          </div>
-                        </div>
-                      );
-                    })}
-                </div>
-              </SectionWrapper>
-            </div>
-          </>
+                        <button
+                          className="group relative text-gray-500 hover:rounded-full hover:bg-gray-200 p-1"
+                          onPointerDown={(e) => e.stopPropagation()}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            // console.log("DELETE CLICKED");
+                            handleDeleteProject(project.id);
+                          }}
+                        >
+                          <MdDeleteForever size={15} />
+                          <span
+                            className="absolute bottom-10 left-0 -translate-x-1/2
+                                     text-xs bg-gray-800 text-white px-2 py-1 rounded
+                                     opacity-0 group-hover:opacity-100
+                                     transition whitespace-nowrap
+                                     pointer-events-none z-[9999] 
+                    "
+                          >
+                            Delete
+                          </span>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
         )}
       </div>
     </>

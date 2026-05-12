@@ -3,6 +3,7 @@ import Input from "../../components/UI/Input.jsx";
 import useProjects from "../../hooks/useWorkspace.jsx";
 // import useTask from "../../hooks/useTask.jsx";
 import Button from "../../components/UI/Button.jsx";
+import Select from "react-select";
 import {
   TASK_STATUSES,
   TASK_PRIORITIES,
@@ -26,9 +27,11 @@ function TaskModal({
     priority: "",
     tagId: "",
     assigneeId: "",
+    status: "todo",
   };
   const modeLabel = mode === "add" ? "Add" : "Edit";
   const [taskData, setTaskData] = useState(initialState);
+  const [selectedUser, setSelectedUser] = useState(null);
 
   const { onCloseModal, projects, handleAddTask } = useProjects();
   // const{handleAddTask}=useTask();
@@ -49,7 +52,7 @@ function TaskModal({
       setTaskData(initialState);
     }
   }, [mode, initialData]);
-  console.log(mode, initialData,taskData);
+
   function handleSubmit() {
     if (
       taskData.title.trim() === "" ||
@@ -80,6 +83,25 @@ function TaskModal({
       onClose();
     }
   }
+
+  const formatOptionLabel = (option) => {
+    return (
+      <div className="flex items-center gap-2">
+        {option.avatar ? (
+          <img
+            src={option.avatar}
+            alt={option.name}
+            className="w-8 h-8 rounded-full object-cover"
+          />
+        ) : (
+          <div className="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center text-sm">
+            {option.name?.charAt(0)}
+          </div>
+        )}
+        <span>{option.name}</span>
+      </div>
+    );
+  };
   return (
     <div
       className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 rounded-2xl"
@@ -175,6 +197,20 @@ function TaskModal({
               ))}
             </select>
 
+            {/* <Select
+              options={users}
+              value={taskData.assigneeId || ""}
+              onChange={(option) => {
+                (option) =>
+                  setTaskData((prev) => ({
+                    ...prev,
+                    assignedTo: option?.value || "",
+                  }));
+              }}
+              formatOptionLabel={formatOptionLabel}
+             // placeholder="Assigne to.."
+            /> */}
+
             <select
               value={taskData.assigneeId || ""}
               id="assignees"
@@ -192,14 +228,36 @@ function TaskModal({
               ))}
             </select>
           </div>
-          <Input
-            type="date"
-            value={taskData.dueDate}
-            onChange={(e) =>
-              setTaskData({ ...taskData, dueDate: e.target.value })
-            }
-            label="Due date"
-          />
+          <div>
+            {mode === "edit" && (
+              <div>
+                <select
+                  value={taskData.status || ""}
+                  id="status"
+                  name="status"
+                  onChange={(e) =>
+                    setTaskData({ ...taskData, status: e.target.value })
+                  }
+                  className="w-full p-2 border rounded mb-4 dark:text-gray-500"
+                >
+                  {/* <option value="">Status</option> */}
+                  {TASK_STATUSES.map((status) => (
+                    <option key={status.id} value={status.id}>
+                      {status.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+            <Input
+              type="date"
+              value={taskData.dueDate}
+              onChange={(e) =>
+                setTaskData({ ...taskData, dueDate: e.target.value })
+              }
+              label="Due date"
+            />
+          </div>
         </div>
         {/* Actions */}
         <div className="flex justify-end gap-2">

@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext, createContext } from "react";
 import { v4 as uuidv4 } from "uuid";
-import NewProject from "../features/projects/NewProject.jsx";
+import NewProject from "../features/projects/ProjectModal.jsx";
 import NoProjectSelected from "../features/projects/NoProjectSelected.jsx";
 import ProjectSidebar from "../features/projects/ProjectSidebar.jsx";
 import SelectedProject from "../features/projects/SelectedProject.jsx";
@@ -15,6 +15,27 @@ export function WorkspaceProvider({ children }) {
   const [showTaskModal, setShowTaskModal] = useState(false);
   const [selectedTaskStatus, setSelectedTaskStatus] = useState("todo");
 
+  const [projectModalMode, setProjectModalMode] = useState("add");
+  const [editingProject, setEditingProject] = useState(null);
+  const [showProjectModal, setShowProjectModal] = useState(false);
+  const [selectedProject, setSelectedProject] = useState(null);
+  const [selectedProjectStatus, setSelectedProjectStatus] =
+    useState("planning");
+  const [projectsState, setProjectsState] = useState(() => {
+    const storedData = localStorage.getItem("projectState");
+
+    return storedData
+      ? {
+          ...JSON.parse(storedData),
+          tasks: JSON.parse(storedData).tasks?.filter(Boolean) || [],
+        }
+      : {
+          selectedProjectId: undefined,
+          projects: [],
+          tasks: [],
+          activityLog: [],
+        };
+  });
   const openAddTaskModal = (status) => {
     setTaskModalMode("add");
     setSelectedTask(null);
@@ -31,32 +52,21 @@ export function WorkspaceProvider({ children }) {
     setShowTaskModal(false);
   };
 
-  const [showProjectModal, setShowProjectModal] = useState(false);
-  const [selectedProjectStatus, setSelectedProjectStatus] = useState("started");
-
-  const openProjectModal = (selectedProjectStatus) => {
+  const openAddProjectModal = (status) => {
+    setProjectModalMode("add");
+    setSelectedProject(null);
     setShowProjectModal(true);
     setSelectedProjectStatus(selectedProjectStatus);
+  };
+  const openEditProjectModal = (project) => {
+    setProjectModalMode("edit");
+    setEditingProject(project);
+    setShowProjectModal(true);
   };
   const onCloseProjectModal = () => {
     setShowProjectModal(false);
   };
 
-  const [projectsState, setProjectsState] = useState(() => {
-    const storedData = localStorage.getItem("projectState");
-
-    return storedData
-      ? {
-          ...JSON.parse(storedData),
-          tasks: JSON.parse(storedData).tasks?.filter(Boolean) || [],
-        }
-      : {
-          selectedProjectId: undefined,
-          projects: [],
-          tasks: [],
-          activityLog: [],
-        };
-  });
   useEffect(() => {
     localStorage.setItem("projectState", JSON.stringify(projectsState));
   }, [projectsState]);
@@ -65,6 +75,14 @@ export function WorkspaceProvider({ children }) {
 
   function handleDeleteProject(projectId) {
     setProjectsState((prevState) => {
+      const hasTasks = tasks.some((t) => t.projectId === projectId);
+
+      if (hasTasks) {
+        console.warn(
+          "Can not delete this project... because project has tasks...",
+        );
+        return prevState;
+      }
       return {
         ...prevState,
         selectedProjectId: undefined,
@@ -75,35 +93,17 @@ export function WorkspaceProvider({ children }) {
     });
   }
 
-  function handleSelectProject(id) {
-    setProjectsState((prevState) => {
-      return {
-        ...prevState,
-        selectedProjectId: id,
-      };
-    });
-  }
-  function handleStartAddProject() {
-    setProjectsState((prevState) => {
-      return {
-        ...prevState,
-        selectedProjectId: null,
-      };
-    });
-  }
-  function handleCancelAddProject() {
-    setProjectsState((prevState) => {
-      return {
-        ...prevState,
-        selectedProjectId: undefined,
-      };
-    });
-  }
-
   function handleAddProject(projectData) {
     setProjectsState((prevState) => {
       const newProject = {
         ...projectData,
+        projectStatus: projectData.projectStatus,
+        progress:
+          projectData.projectStatus === "completed"
+            ? 100
+            : projectData.projectStatus === "ongoing"
+              ? 50
+              : 0,
         id: uuidv4(),
         createdAt: new Date(),
       };
@@ -124,43 +124,104 @@ export function WorkspaceProvider({ children }) {
     });
   }
 
-  //  HANDLE MOVE PROJECTS
+  ////// UDATE PROJECT
 
-  function handleMoveProjects(projectId, newStatus) {
+  function handleUpdateProject(updatedProject) {
     setProjectsState((prevState) => {
-      const updatedprojects = prevState.projects.map((project) =>
-        project.id === projectId
-          ? { ...project, projectStatus: newStatus }
-          : project,
-      );
+      const updatedProjects = prevState.projects
+        .map((project) => {
+          if (!project) return null;
+
+          if (project.id === updatedProject.id) {
+            let progress = 0;
+            if (updatedProject.projectStatus === "planning") progress = 10;
+            if (updatedProject.projectStatus === "started") progress = 50;
+            if (updatedProject.projectStatus === "ongoing") progress = 75;
+            if (updatedProject.projectStatus === "completed") progress = 100;
+
+            return { ...project, ...updatedProject, progress: progress };
+          }
+          return project;
+        })
+        .filter(Boolean);
+
+      const newActivity = {
+        id: Date.now(),
+        message: `Project "${updatedProject.title}" updated.`,
+        timestamp: new Date(),
+        projectId: updatedProject.id,
+        type: "PROJECT_UPDATED",
+        updatedBy: loggedInUser.userId,
+      };
       return {
         ...prevState,
-        projects: updatedprojects,
+        projects: updatedProjects,
+        activityLog: [...(prevState.activityLog || []), newActivity],
       };
     });
   }
+
+  //  HANDLE MOVE PROJECTS
+
+  function handleMoveProject(projectId, newStatus) {
+    setProjectsState((prevState) => {
+      const updatedprojects = prevState.projects.map((project) =>
+        // project.id === projectId
+        //   ? { ...project, projectStatus: newStatus }
+        //   : project,
+        {
+          if (project.id === projectId) {
+            let progress = 0;
+            if (newStatus === "planning") progress = 10;
+            if (newStatus === "started") progress = 50;
+            if (newStatus === "ongoing") progress = 75;
+            if (newStatus === "completed") progress = 100;
+
+            return { ...project, projectStatus: newStatus, progress };
+          }
+          return project;
+        },
+      );
+      const project = prevState.projects.find((p) => p.id === projectId);
+      const newActivity = {
+        id: Date.now(),
+        message: `Status change of project - ${project.title} from ${project.projectStatus} to ${newStatus}.`,
+        timestamp: new Date(),
+        projectId: project.id,
+        type: "PROJECT_STATUS_CHANGE",
+        updatedBy: loggedInUser.userId,
+      };
+      console.log(activityLog, project);
+      return {
+        ...prevState,
+        projects: updatedprojects,
+        activityLog: [...(prevState.activityLog || []), newActivity],
+      };
+    });
+  }
+
   function calculateProjectProgress(projectId, tasks) {
-     const projectTasks = tasks.filter(
-    (task) => task && task.projectId === projectId
-  );
+    const projectTasks = tasks.filter(
+      (task) => task && task.projectId === projectId,
+    );
 
-  if (projectTasks.length === 0) return 0;
+    if (projectTasks.length === 0) return 0;
 
-  const completed = projectTasks.filter(
-    (task) => task.status === "done"
-  ).length;
+    const completed = projectTasks.filter(
+      (task) => task.status === "done",
+    ).length;
 
-  return Math.round((completed / projectTasks.length) * 100);
+    return Math.round((completed / projectTasks.length) * 100);
   }
   function calculateOverallProjectProgress(projects, tasks) {
-  if (projects.length === 0) return 0;
+    if (projects.length === 0) return 0;
 
-  const totalProgress = projects.reduce((sum, project) => {
-    return sum + calculateProjectProgress(project.id, tasks);
-  }, 0);
+    const totalProgress = projects.reduce((sum, project) => {
+      return sum + calculateProjectProgress(project.id, tasks);
+    }, 0);
 
-  return Math.round(totalProgress / projects.length);
-}
+    return Math.round(totalProgress / projects.length);
+  }
   // ================= TASK =================
 
   function handleAddTask(taskData) {
@@ -220,6 +281,12 @@ export function WorkspaceProvider({ children }) {
           if (!task) return null;
 
           if (task.id === updatedTask.id) {
+            let progress = 0;
+            if (updatedTask.status === "todo") progress = 10;
+            if (updatedTask.status === "progress") progress = 50;
+            if (updatedTask.status === "review") progress = 75;
+            if (updatedTask.status === "done") progress = 100;
+
             return {
               ...task,
               text: updatedTask.title,
@@ -229,6 +296,8 @@ export function WorkspaceProvider({ children }) {
               projectId: updatedTask.projectId,
               assigneeId: updatedTask.assigneeId,
               tagId: updatedTask.tagId,
+              status: updatedTask.status,
+              progress: progress,
             };
           }
 
@@ -260,8 +329,9 @@ export function WorkspaceProvider({ children }) {
         {
           if (task.id === taskId) {
             let progress = 0;
-
+            if (newStatus === "todo") progress = 10;
             if (newStatus === "progress") progress = 50;
+            if (newStatus === "review") progress = 75;
             if (newStatus === "done") progress = 100;
 
             return { ...task, status: newStatus, progress };
@@ -287,19 +357,18 @@ export function WorkspaceProvider({ children }) {
   }
 
   function calculateOverallTaskProgress(tasks) {
-  const validTasks = tasks.filter((t) => t);
+    const validTasks = tasks.filter((t) => t);
 
-  if (validTasks.length === 0) return 0;
+    if (validTasks.length === 0) return 0;
 
-  const completed = validTasks.filter(
-    (task) => task.status === "done"
-  ).length;
-console.log("valid tasks",validTasks,"Completed",completed);
-console.log(Math.round((completed/validTasks.length)*100));
+    const completed = validTasks.filter(
+      (task) => task.status === "done",
+    ).length;
+    // console.log("valid tasks",validTasks,"Completed",completed);
+    // console.log(Math.round((completed/validTasks.length)*100));
 
-
-  return Math.round((completed/validTasks.length)*100);
-}
+    return Math.round((completed / validTasks.length) * 100);
+  }
   // ================= DERIVED =================
   {
     /* PROJECT CONTENTS */
@@ -307,42 +376,23 @@ console.log(Math.round((completed/validTasks.length)*100));
   // SELECTED PROJECT
   const { projects, tasks, activityLog, selectedProjectId } = projectsState;
 
-  let content = <NoProjectSelected onStartAddProject={handleStartAddProject} />;
-
-  if (projectsState.selectedProjectId === null) {
-    content = (
-      <NewProject
-        onAddNewProject={handleAddProject}
-        onCancel={handleCancelAddProject}
-      />
-    );
-  } else if (projectsState.selectedProjectId !== undefined) {
-    const selectedProject = projectsState.projects.find(
-      (project) => project.id === projectsState.selectedProjectId,
-    );
-
-    content = (
-      <SelectedProject
-        project={selectedProject}
-        onDelete={handleDeleteProject}
-        onAddTask={handleAddTask}
-        onDeleteTask={handleDeleteTask}
-        onMoveTask={handleMoveTask}
-        tasks={projectsState.tasks}
-      />
-    );
-  }
   //   STATS (GLOBAL)
   const totalProjects = projectsState.projects.length;
-  const completedProjects=projectsState.projects.filter((p)=>p.projectStatus==="completed")
-  const startedProjects=projectsState.projects.filter((p)=>p.projectStatus==="started")
-  const pendingProjects=projectsState.projects.filter((p)=>p.projectStatus==="ongoing")
+  const completedProjects = projectsState.projects.filter(
+    (p) => p.projectStatus === "completed",
+  );
+  const startedProjects = projectsState.projects.filter(
+    (p) => p.projectStatus === "started",
+  );
+  const pendingProjects = projectsState.projects.filter(
+    (p) => p.projectStatus === "ongoing",
+  );
   const totalTasks = projectsState.tasks.length;
   const completedTasks = projectsState.tasks.filter(
     (task) => task && task.status === "done",
   ).length;
 
-  const selectedProject = projectsState.projects.find(
+  const selectProject = projectsState.projects.find(
     (project) => project.id === projectsState.selectedProjectId,
   );
   // TASKS OF SELECTED PROJECT
@@ -361,13 +411,13 @@ console.log(Math.round((completed/validTasks.length)*100));
   const projectStats = {
     total: tasks.length,
     completed: doneTasks.length,
-    todo:todoTasks.length,
-    inProcess:progressTasks.length,
+    todo: todoTasks.length,
+    inProcess: progressTasks.length,
     pending: todoTasks.length + progressTasks.length,
-    totalProjects:totalProjects,
-    completedProjects:completedProjects.length,
-    startedProjects:startedProjects.length,
-    pendingProjects:pendingProjects.length
+    totalProjects: totalProjects,
+    completedProjects: completedProjects.length,
+    startedProjects: startedProjects.length,
+    pendingProjects: pendingProjects.length,
   };
   // CLEAR DATA
   function handleResetStorage() {
@@ -393,15 +443,17 @@ console.log(Math.round((completed/validTasks.length)*100));
 
         // derived
         projectsState,
-        selectedProject,
+        selectProject,
         filteredTasks,
         totalProjects,
         totalTasks,
         completedTasks,
-        todoTasks,        
+        todoTasks,
         progressTasks,
         doneTasks,
-        content,
+
+        editingProject,
+        projectModalMode,
         projectStats,
         showTaskModal,
         selectedTaskStatus,
@@ -412,14 +464,11 @@ console.log(Math.round((completed/validTasks.length)*100));
 
         // actions
         handleAddProject,
+        handleUpdateProject,
         handleDeleteProject,
-        handleCancelAddProject,
-        handleStartAddProject,
-        handleSelectProject,
-        handleMoveProjects,
+        handleMoveProject,
         calculateProjectProgress,
         calculateOverallProjectProgress,
-
 
         handleAddTask,
         handleDeleteTask,
@@ -432,7 +481,8 @@ console.log(Math.round((completed/validTasks.length)*100));
         onCloseTaskModal,
         setShowTaskModal,
 
-        openProjectModal,
+        openAddProjectModal,
+        openEditProjectModal,
         onCloseProjectModal,
         setShowProjectModal,
 

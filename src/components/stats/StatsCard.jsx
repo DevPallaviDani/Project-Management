@@ -1,21 +1,21 @@
 import React from "react";
 
-function StatsCard({ title, value, icon }) {
+function StatsCard({ title, value, icon ,color}) {
   return (
     <>
       <div
-        className="p-3 flex flex-row items-center bg-card rounded-2xl shadow-md gap-4 
-       hover:shadow-indigo-500/20 hover:rounded-xl hover:shadow-lg transition"
+        className={`flex-1 px-2 py-7 ${color} rounded-full shadow-lg 
+       hover:shadow-indigo-500/20  hover:shadow-lg transition`}
       >
-        {icon}
-        <div>
-        <span className="lg:text-2xl sm:text-xs font-bold text-gray-600 dark:text-gray-300">
-          {value}
-        </span>
-        <p className=" text-gray-400  dark:text-gray-100 text-xs lg:text-xl">
-          {title}
-        </p>{" "}
-      </div>
+        <div className="grid grid-cols-1 p-4 place-items-center">
+          {/* {icon} */}
+          <span className="lg:text-xl sm:text-sm font-bold ">
+            {value}
+          </span>
+          <p className=" text-lg lg:text-sm ">
+            {title}
+          </p>{" "}
+        </div>
       </div>
     </>
   );

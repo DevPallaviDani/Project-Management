@@ -26,7 +26,7 @@ function MiniCalendar({ tasks, onDateSelect }) {
   };
 
   return (
-    <div className="rounded-xl p-3 shadow">
+    <div className="rounded-2xl p-1 shadow bg-card">
       <Calendar
         calendarType="iso8601"
         value={date}

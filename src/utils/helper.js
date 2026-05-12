@@ -1,5 +1,5 @@
 import { users } from "../data/Users.js";
-import { TAGS, TASK_PRIORITIES, TASK_STATUSES } from "../constants/global.js";
+import { TAGS, TASK_PRIORITIES, TASK_STATUSES,PROGRESS,PROJECT_TYPES } from "../constants/global.js";
 import useWorkspace from "../hooks/useWorkspace.jsx";
 
 export function isCurrentWeek(date) {
@@ -26,7 +26,7 @@ export function isSameDay(d1, d2) {
   );
 }
 
-export const getAssignee = ({ userId }) => {
+export const getAssignee = ( userId ) => {
   return users.find((user) => user.id === userId);
 };
 export const getTaskPriorities = (priority) => {
@@ -39,3 +39,23 @@ export const getProjectByTask = (task) => {
 export const getStatusByTask = (task) => {
   return TASK_STATUSES.find((s) => s.id === task.status);
 };
+export const getUserById=(userId)=>{
+  return users.find((user) => user.id === userId);
+}
+export const getTagById=(tagId)=>{
+  return TAGS.find((tag) => tag.id === tagId);
+}
+export const getProgressById=(status)=>{
+  return PROGRESS.find((p) => p.id === status);
+}
+export const getProjectType = (projectType) => {
+  return PROJECT_TYPES.find((p) => p.label === projectType);
+};
+export const getProgressColor =(progress)=>{  
+    if (progress < 30) return "bg-slate-400 text-slate-700";   
+    if (progress < 70) return "bg-violet-400 text-violet-700";
+    if (progress < 98) return "bg-blue-400 text-blue-700";
+    if (progress === 100) return "bg-green-500 text-white";
+    return "bg-slate-400 text-slate-700";
+ 
+}

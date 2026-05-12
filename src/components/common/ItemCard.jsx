@@ -15,7 +15,7 @@ function ItemCard({
   progress,
 }) {
   // ✅ Line-through logic
-  const isTaskDone = taskStatus === "done";
+  const isTaskDone = taskStatus.id === "done";
   const isProjectDone = projectStatus === "completed";
 
   const textStyle =
@@ -101,9 +101,7 @@ function ItemCard({
                 <div
                   className="bg-blue-300 h-2 rounded-full w-full items-end pr-1"
                   style={{ width: `${progress}%` }}
-                >
-                  
-                </div>
+                ></div>
               </div>
               <span
               // className={`${progress > 0 ? "visible" : "hidden"}`}
@@ -115,6 +113,16 @@ function ItemCard({
           {/* Bottom Row */}
           <div className="flex justify-between items-center mt-4 border-t p-1">
             <div className="flex justify-center gap-2">
+              {/* Status */}
+              {(taskStatus.id || projectStatus) && (
+                // <span className="text-xs text-text-muted">
+                //   {taskStatus.label || projectStatus}
+                // </span>
+                <span className={`${taskStatus.color} p-2 rounded-2xl `}>
+                  {taskStatus.label || projectStatus}
+                </span>
+              )}
+
               {priority && (
                 <span
                   className={`inline-block px-2 py-1 text-sm  text-gray-600   ${priority.color} ${textStyle} rounded-full`}
@@ -147,13 +155,6 @@ function ItemCard({
                   </span>
                 </div>
               )}
-
-              {/* Status */}
-              {/* {(taskStatus || projectStatus) && (
-                <span className="text-xs text-text-muted">
-                  {taskStatus || projectStatus}
-                </span>
-              )} */}
             </div>
           </div>
           {/* Overdue */}

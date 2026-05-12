@@ -7,7 +7,9 @@ import Button from "../components/UI/Button.jsx";
 import SectionWrapper from "../components/common/SectionWrapper.jsx";
 import ItemCard from "../components/common/ItemCard.jsx";
 import SidePanel from "../features/dashboard/SidePanel.jsx";
+import MiniCalendar from "../components/dashboard/MiniCalendar.jsx";
 import { loggedInUser } from "../constants/global.js";
+import Header from "../components/layout/Header.jsx";
 import {
   isSameDay,
   getAssignee,
@@ -32,6 +34,7 @@ function Dashboard() {
     projects,
     calculateOverallProjectProgress,
     calculateOverallTaskProgress,
+    calculateProjectProgress,
   } = useWorkspace();
   // const { openTaskModal, tasks } = useTask();
   const {
@@ -90,9 +93,12 @@ function Dashboard() {
       return;
     }
   };
-  const projectProgress = calculateOverallProjectProgress(projects, tasks);
+  const projectOverallProgress = calculateOverallProjectProgress(
+    projects,
+    tasks,
+  );
+  const projectProgress = calculateProjectProgress(projects, tasks);
   const taskProgress = calculateOverallTaskProgress(tasks);
-  console.log("Task Progress ", taskProgress);
 
   const getGradient = (progress) => {
     if (progress < 30) return "url(#redGradient)";
@@ -100,33 +106,6 @@ function Dashboard() {
     if (progress < 85) return "url(#greenGradient)";
     return "url(#blueGradient)";
   };
-
-  const gradientElement = (
-    <div className="relative">
-      <svg width="0" height="0">
-        <defs>
-          <linearGradient id="blueGradient">
-            <stop offset="0%" stopColor="#3ea1ec" />
-            <stop offset="100%" stopColor="#67e8f9" />
-          </linearGradient>
-          <linearGradient id="redGradient">
-            <stop offset="0%" stopColor="#991b1b" />
-            <stop offset="100%" stopColor="#f87171" />
-          </linearGradient>
-
-          <linearGradient id="greenGradient">
-            <stop offset="0%" stopColor="#17ad37" />
-            <stop offset="100%" stopColor="#98ec2d" />
-          </linearGradient>
-
-          <linearGradient id="yellowGradient">
-            <stop offset="0%" stopColor="#fbcf33" />
-            <stop offset="100%" stopColor="#fef08a" />
-          </linearGradient>
-        </defs>
-      </svg>
-    </div>
-  );
 
   return (
     <>
@@ -156,24 +135,44 @@ function Dashboard() {
           </svg>
         </div>
       </>
+      <Header />
       <div
         className="flex max-auto w-full md:px-2 rounded-3xl  
     muted-bg text-text-primary overflow-x-hidden "
       >
         <div className="grid grid-cols-1 md:grid-cols-[80%_20%] gap-4 mt-20 md:mt-2">
           <div>
-            {/* STATS */}
-            <StatsGrid />
-            <QuickActionBar />
+            <div className="w-full bg-card p-5 rounded-2xl shadow-md ">
+              <div className="flex items-start justify-between mb-8 ml-2">
+                <div>
+                  <p className="text-2xl font-medium">Total Tasks</p>
+                  <h2 className="p-3 text-5xl font-bold">{tasks.length}</h2>
+                </div>
+                {/* Optional action icons */}
+                <div className="flex items-center gap-3 text-purple-700/70">
+                  {/* <button className="hover:text-purple-900 transition">
+                    👁
+                  </button>
+                  <button className="hover:text-purple-900 transition">
+                    ⚙️
+                  </button> */}
+                </div>
+              </div>
+              <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between ">
+                {/* STATS */}
+                <StatsGrid />
+                <QuickActionBar />
+              </div>
+            </div>
 
             {/* MAIN GRID */}
-            <div className="grid grid-rows-1 md:grid-rows-2  mt-3 ml-2">
+            <div className="grid grid-rows-1 md:grid-rows-2  mt-3 ml-2  ">
               {/* TASKS */}
 
               {/* Task Progress */}
-              <div className=" flex gap-3">
-                <div className="bg-card p-5 rounded-2xl shadow-md  grid md:grid-cols-2 gap-2 ">
-                  <h3 className="text-xl text-gray-500 mb-2 text-center">
+              <div className=" flex gap-4">
+                <div className="w-full bg-card p-5 rounded-2xl shadow-md  grid md:grid-cols-2 gap-2 ">
+                  <h3 className="text-lg text-gray-500 mb-2 text-center">
                     Tasks Overview
                   </h3>
 
@@ -197,9 +196,34 @@ function Dashboard() {
                   </div>
                 </div>
 
-                <div className="bg-card p-5 rounded-2xl shadow-md  grid md:grid-cols-2 gap-2">
-                  <h3 className="text-xl text-gray-500 mb-2">
+                <div className="w-full bg-card p-5 rounded-2xl shadow-md  grid md:grid-cols-2 gap-2">
+                  <h3 className="text-lg text-gray-500 mb-2">
                     Projects Overview
+                  </h3>
+
+                  <div className="mt-5">
+                    <CircularProgressBar
+                      percent={projectOverallProgress}
+                      size={120}
+                      colorSlice={getGradient(projectOverallProgress)}
+                      colorCircle="#e5e7eb"
+                      colorText="#111"
+                      stroke={10}
+                      // text={`${completedTasks}/${tasks.length}`}
+                    />
+                  </div>
+
+                  <div className="pl-6 text-sm text-gray-500 space-y-2">
+                    <p>Total : {totalProjects}</p>
+                    <p>✅ Completed: {completedProjects}</p>
+                    <p>🚧 On going: {pendingProjects}</p>
+                    <p>📌 Started: {startedProjects}</p>
+                  </div>
+                </div>
+
+                {/* <div className="bg-card p-5 rounded-2xl shadow-md  grid md:grid-cols-2 gap-2">
+                  <h3 className="text-xl text-gray-500 mb-2">
+                    Project Progress
                   </h3>
 
                   <div className="mt-5">
@@ -220,7 +244,7 @@ function Dashboard() {
                     <p>🚧 On going: {pendingProjects}</p>
                     <p>📌 Started: {startedProjects}</p>
                   </div>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>
