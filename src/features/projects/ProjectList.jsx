@@ -2,6 +2,7 @@ import React, { use } from "react";
 import useWorkspace from "../../hooks/useWorkspace.jsx";
 import SectionWrapper from "../../components/common/SectionWrapper.jsx";
 import ItemCard from "../../components/common/ItemCard.jsx";
+import { PROJECT_STATUSES } from "../../constants/global.js";
 import {
   getUserById,
   getProgressById,
@@ -64,6 +65,9 @@ function ProjectList() {
             </thead>
             <tbody>
               {projects.map((project) => {
+                const projectStatusColor = PROJECT_STATUSES.find(
+                  (status) => status.id === project.projectStatus,
+                );
                 const projectType = getProjectType(project.projectType);
                 const projectOwner = getAssignee(project.ownerId);
                 const tasksOfProject = tasks.filter(
@@ -95,7 +99,7 @@ function ProjectList() {
                     <td>
                       <span
                         className={` text-sm rounded-full 
-                              px-2 py-1`}
+                              px-2 py-1 ${projectStatusColor.color}`}
                       >
                         {project.projectStatus.toUpperCase()}
                       </span>

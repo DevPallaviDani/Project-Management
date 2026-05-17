@@ -33,7 +33,7 @@ function SidePanel({ tasks, onDateSelect }) {
 
   return (
     <div
-      className="hidden lg:flex flex-col w-80 px-2 py-2 gap-2 
+      className="hidden lg:flex flex-col w-80 px-2 py-2 gap-2 rounded-2xl shadow-md 
      bg-sidebar  overflow-y-auto"
     >
       <section title="Calendar">

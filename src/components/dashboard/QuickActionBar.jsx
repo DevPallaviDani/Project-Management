@@ -19,7 +19,7 @@ function QuickActionBar() {
   return (
     <>
       <div
-        className="flex flex-col gap-3 rounded-md
+        className="flex flex-rows gap-3 rounded-md
        bg-muted text-text-light justify-end"
       >
         <div title="Add Task">

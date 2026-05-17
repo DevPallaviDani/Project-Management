@@ -28,14 +28,14 @@ function TaskCard({
   status,
   progress,
 }) {
-    
   return (
     <Card>
       <CardHeader
+        dueDate={task.dueDate || "No date"}
         title={task.text}
         subtitle={project?.title || "No Project"}
         // rightContent={
-        
+
         // }
       />
       <CardBody>
@@ -58,8 +58,8 @@ function TaskCard({
           {/* Tags */}
           <div className="flex gap-1 mt-2 flex-wrap">
             <span className={`text-sm rounded-full ${status.color} px-2 py-1`}>
-            {status.label}
-          </span>
+              {status.label}
+            </span>
             {tag && (
               <span
                 className={` inline-block px-2 py-1 text-sm
@@ -79,6 +79,8 @@ function TaskCard({
               </span>
             )}
           </div>
+        </div>
+        <div className="flex flex-row justify-between mt-1">
           {/* Assignees */}
           <div className=" flex gap-2 relative">
             {/* assignee */}
@@ -101,17 +103,6 @@ function TaskCard({
                 </span>
               </div>
             )}
-          </div>
-        </div>
-        <div className="flex flex-row justify-between mt-1">
-          <div>
-            {/* Due Date */}
-            <span
-              className="text-xs text-gray-400 bg-slate-50 
-          rounded-2xl p-2"
-            >
-              {task.dueDate || "No date"}
-            </span>
           </div>
 
           <div className="flex justify-end">

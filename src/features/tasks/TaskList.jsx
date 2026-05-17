@@ -211,12 +211,3 @@ function TaskList() {
 }
 
 export default TaskList;
-{
-  /* <div key={task.id} className="flex gap-5 border-b mt-2">
-                <div>{task.text}</div>
-                <span>{project.title}</span>
-                <span className="truncate">{task.taskDescription}</span>
-
-                <div>{task.status}</div>
-              </div> */
-}

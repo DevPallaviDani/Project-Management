@@ -31,6 +31,7 @@ function ProjectCard({
   return (
     <Card>
       <CardHeader
+        dueDate={project.dueDate || "No date"}
         title={project.title}
         // subtitle={project?.title || "No Project"}
         // rightContent={}
@@ -82,6 +83,8 @@ function ProjectCard({
               </span>
             )} */}
           </div>
+        </div>
+        <div className="flex flex-row justify-between mt-1">
           {/* projectOwner */}
           <div className=" flex gap-2 relative">
             {/* projectOwner */}
@@ -105,18 +108,6 @@ function ProjectCard({
               </div>
             )}
           </div>
-        </div>
-        <div className="flex flex-row justify-between mt-1">
-          <div>
-            {/* Due Date */}
-            <span
-              className="text-xs text-gray-400 bg-slate-50 
-          rounded-2xl p-2"
-            >
-              {project.dueDate || "No date"}
-            </span>
-          </div>
-
           <div className="flex justify-end">
             <button
               className="text-gray-500 hover:rounded-full hover:bg-gray-200 p-1"
