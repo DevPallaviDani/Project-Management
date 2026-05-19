@@ -26,7 +26,13 @@ function MiniCalendar({ tasks, onDateSelect }) {
   };
 
   return (
-    <div className="rounded-2xl p-1 shadow bg-card">
+    <div className=" w-full bg-gradient-to-br from-white/40 to-white/10
+                    p-5 dark:hover:text-gray-900
+                   dark:from-gray-800/60 dark:to-gray-700/40
+                   backdrop-blur-2xl
+                   border border-white/30 dark:border-slate-700/40
+                   shadow-2xl rounded-2xl transition-all duration-300
+                   hover:-translate-y-1 hover:shadow-indigo-500/20">
       <Calendar
         calendarType="iso8601"
         value={date}

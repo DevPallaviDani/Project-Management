@@ -13,13 +13,18 @@ export const TASK_STATUSES = [
   { id: "done", label: "Done", color: "bg-green-100 text-green-600" },
 ];
 
-export const STATUS_STYLES = {
-  todo: "bg-gray-100 text-gray-600",
-  "in-progress": "bg-blue-100 text-blue-600",
-  review: "bg-yellow-100 text-yellow-600",
-  done: "bg-green-100 text-green-600",
-  blocked: "bg-red-100 text-red-600",
-};
+export const STATUS_STYLES = [
+  {id: "todo",
+  color: "bg-orange-600"},
+  {id: "progress",
+  color: "bg-blue-600"},
+  {id: "review",
+  color: "bg-cyan-600"},
+  {id: "done",
+  color: "bg-green-600"},
+  {id: "backlog",
+  color: "bg-gray-600"},
+  ];
 export const TAGS = [
   { id: "tag_1", label: "Design", color: "bg-blue-200" },
   { id: "tag_2", label: "Development", color: "bg-sky-100" },

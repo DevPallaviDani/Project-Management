@@ -105,8 +105,8 @@ const overDueTasks =upcomingTasks.overdue;
   .reverse();
 
   //   STATS (GLOBAL)
-  const totalProjects = projectsState.projects.length;
-  const totalTasks = projectsState.tasks.length;
+  const totalProjects = projectsState?.projects.length;
+  const totalTasks = projectsState?.tasks.length;
 
   // TASK BREAKDOWN (KANBAN READY)
   const todoTasks = tasks.filter((task) => task.status === "todo");

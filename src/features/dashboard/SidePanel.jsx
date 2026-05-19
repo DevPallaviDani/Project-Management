@@ -29,22 +29,21 @@ function SidePanel({ tasks, onDateSelect }) {
       if (days < 30) return `${days}d ago`;
     }
   }
-  console.log(activities);
 
   return (
     <div
-      className="hidden lg:flex flex-col w-80 px-2 py-2 gap-2 rounded-2xl shadow-md 
-     bg-sidebar  overflow-y-auto"
+      className="hidden lg:flex flex-col w-80 px-2 py-2 gap-2 rounded-2xl shadow-2xl bg-transparent
+       overflow-y-auto mb-1"
     >
-      <section title="Calendar">
+      {/* <section title="Calendar">
         <MiniCalendar tasks={tasks} onDateSelect={onDateSelect} />
-      </section>
+      </section> */}
       <section title="Upcoming Deadlines">
-        <div className=" p-1 rounded-xl">
+        <div className=" p-1 rounded-xl border-lime-400/30">
           <h4 className="text-sm font-semibold mb-1 border-b">
             Upcoming Deadlines
           </h4>
-          <div className="space-y-2">
+          <div className="space-y-2 ">
             {deadlines.length === 0 ? (
               <p className="text-sm text-gray-400">No upcoming tasks</p>
             ) : (
@@ -55,16 +54,25 @@ function SidePanel({ tasks, onDateSelect }) {
                 );
 
                 return (
-                  <div key={index} className="">
-                    <span
-                      className={`text-xs  ${updl?.text || "text-gray-400"}  p-1 rounded-md`}
+                  <div key={index} className="flex flex-row items-center text-sm
+                    
+                    bg-gradient-to-br from-white/40 to-white/10
+                    p-1
+                   dark:from-gray-800/60 dark:to-gray-900/40
+                   backdrop-blur-2xl
+                   border border-white/30 dark:border-slate-700/40
+                   shadow-2xl rounded-full transition-all duration-300
+                   hover:-translate-y-1 hover:shadow-indigo-500/20 ">
+                  
+                 
+                    <span className="text-sm  text-gray-500 dark:text-gray-30 ml-2">
+                      {item.title ? item.title : ""}
+                    </span>   
+                      <span
+                      className={`text-sm ${updl?.text || "text-gray-400"}  p-1 rounded-md`}
                     >
                       {item.date ? item.date : ""}{" "}
                     </span>{" "}
-                    {"- "}
-                    <span className="text-sm  mb-3 text-gray-600 dark:text-gray-300">
-                      {item.title ? item.title : ""}
-                    </span>
                     {/* <span className="text-xs text-gray-400">{item.project}</span> */}
                   </div>
                 );
@@ -74,11 +82,11 @@ function SidePanel({ tasks, onDateSelect }) {
         </div>
       </section>
       <section title="Recent Activity">
-        <div className="rounded-2xl  p-1">
-          <h4 className="text-sm font-semibold mb-1 border-b">
+        <div className="rounded-2xl p-2">
+          <h4 className="text-sm font-semibold mb-2 border-b">
             Recent Activity
           </h4>
-          <div className="space-y-2">
+          <div className="space-y-2 rounded-full ">
             {activities?.length === 0 ? (
               <p className="text-sm text-gray-400">No activity yet</p>
             ) : (
@@ -87,15 +95,24 @@ function SidePanel({ tasks, onDateSelect }) {
                   (u) => u.id === item.updatedBy,
                   //|| u.id === item.createdBy
                 );
-                {
-                  console.log(item.updatedBy, user?.name);
-                }
+
                 return (
-                  <div key={index} className="flex flex-col text-sm">
-                    <span className="text-gray-700 dark:text-gray-200">
+                  <div
+                    key={index}
+                    className="flex flex-col justify-center text-gray-500
+                    text-sm
+                    relative
+                    bg-gradient-to-br from-white/40 to-white/10
+                   dark:from-gray-800/60 dark:to-gray-900/40
+                   backdrop-blur-2xl
+                   border border-white/30 dark:border-slate-700/40
+                   shadow-2xl rounded-full p-2 transition-all duration-300
+                   hover:-translate-y-1 hover:shadow-indigo-500/20"
+                  >
+                    <span className=" px-2 py-2">
                       {item.message}
                       <span> by {user?.name || ""}</span>
-                      <span className="ml-1 text-xs text-gray-400">
+                      <span className="ml-1 text-xs text-gray-400 ">
                         {formatTime(item.timestamp)}
                       </span>
                     </span>
